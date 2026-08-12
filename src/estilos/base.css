@@ -1,0 +1,108 @@
+/* Tokens da marca, tema claro/escuro, reset e tipografia base. */
+
+:root {
+  --p: #6938ef;
+  --p2: #5527d6;
+  --green: #0e9f6e;
+  --coral: #ef6254;
+  --bg: #f5f4f9;
+  --card: #fff;
+  --side: #171420;
+  --text: #201c29;
+  --muted: #746e80;
+  --line: #e8e4ee;
+  --soft: #f1eef7;
+  --shadow: 0 18px 45px -32px #40345d66;
+  font-family: "Plus Jakarta Sans",system-ui,sans-serif;
+  color-scheme: light;
+}
+
+[data-theme=dark] {
+  --bg: #0f1118;
+  --card: #191c27;
+  --side: #11131b;
+  --text: #f5f3ff;
+  --muted: #aba6b8;
+  --line: #2e3240;
+  --soft: #232633;
+  --shadow: 0 18px 45px -25px #000;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  transition: .25s;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 3px solid #6938ef35;
+  outline-offset: 2px;
+}
+
+.empty {
+  padding: 55px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.eyebrow {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+
+[data-theme=dark] .stat-icon {
+  background: #2a2440;
+}
+
+[data-theme=dark] .booking {
+  background: #2a2440;
+  color: #c9bafa;
+}
+
+[data-theme=dark] .booking.green {
+  background: #17372e;
+  color: #73d8b6;
+}
+
+[data-theme=dark] .day-booking {
+  background: #2a2440;
+}
+
+[data-theme=dark] .day-booking.confirmed {
+  background: #17372e;
+}
+
+[data-theme=dark] .month-event {
+  background: #2a2440;
+  color: #c9bafa;
+}
+
+[data-theme=dark] .month-event.confirmed {
+  background: #17372e;
+  color: #73d8b6;
+}

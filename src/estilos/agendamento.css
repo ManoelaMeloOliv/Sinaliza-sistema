@@ -1,0 +1,1091 @@
+/* Pagina publica de agendamento. Tudo escopado em .pagina-publica para nao conflitar com o painel. */
+
+.pagina-publica {
+  --p: #6938ef;
+  --p2: #5527d6;
+  --green: #0e9f6e;
+  --ink: #201b2a;
+  --muted: #716b7d;
+  --bg: #f6f5fa;
+  --card: #fff;
+  --line: #e8e4ee;
+  --soft: #f1eef7;
+  --shadow: 0 22px 55px -36px #392d57aa;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  color: #201b2a;
+}
+.pagina-publica * {
+  box-sizing: border-box;
+}
+.pagina-publica {
+  margin: 0;
+  background: var(--bg);
+  min-height: 100vh;
+}
+.pagina-publica .top {
+  height: 62px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pagina-publica .brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.pagina-publica .brand img,
+.pagina-publica .brand svg {
+  width: 29px;
+  height: 29px;
+  object-fit: contain;
+  flex: none;
+}
+.pagina-publica .hero {
+  background: linear-gradient(135deg, #6938ef, #8b50e7 58%, #ef6b7b);
+  color: #fff;
+  padding: 38px 20px 68px;
+}
+.pagina-publica .hero-in {
+  max-width: 900px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+.pagina-publica .avatar {
+  width: 70px;
+  height: 70px;
+  border: 3px solid #ffffff55;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #f3bd98, #925b45);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 700;
+  box-shadow: 0 13px 30px #2d135f44;
+}
+.pagina-publica .hero h1 {
+  font-size: 25px;
+  margin: 0 0 6px;
+}
+.pagina-publica .hero p {
+  margin: 0;
+  color: #ffffffd9;
+  font-size: 13px;
+}
+.pagina-publica .verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  background: #ffffff20;
+  border-radius: 99px;
+  padding: 4px 8px;
+  margin-top: 8px;
+}
+.pagina-publica .shell {
+  max-width: 900px;
+  margin: -36px auto 55px;
+  padding: 0 18px;
+}
+.pagina-publica .booking {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+  align-items: start;
+}
+.pagina-publica .main {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 19px;
+  padding: 25px;
+  box-shadow: var(--shadow);
+  min-height: 500px;
+}
+.pagina-publica .aside {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 16px;
+}
+.pagina-publica .steps {
+  display: flex;
+  align-items: center;
+  margin-bottom: 27px;
+}
+.pagina-publica .step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  color: #aaa4b3;
+  font-size: 10px;
+  font-weight: 700;
+}
+.pagina-publica .step:after {
+  content: "";
+  height: 2px;
+  background: #e2dee8;
+  flex: 1;
+  margin: 0 7px;
+}
+.pagina-publica .step:last-child {
+  flex: 0;
+}
+.pagina-publica .step:last-child:after {
+  display: none;
+}
+.pagina-publica .step i {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #eeeaf2;
+  font-style: normal;
+  margin-right: 5px;
+}
+.pagina-publica .step.active,
+.pagina-publica .step.done {
+  color: var(--p);
+}
+.pagina-publica .step.active i {
+  background: var(--p);
+  color: #fff;
+}
+.pagina-publica .step.done i {
+  background: #e9e3ff;
+  color: var(--p);
+}
+.pagina-publica .screen {
+  display: none;
+  animation: enter 0.3s ease;
+}
+.pagina-publica .screen.active {
+  display: block;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pagina-publica h2 {
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+.pagina-publica h2 + p.intro {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 0 20px;
+}
+.pagina-publica .services {
+  display: grid;
+  gap: 10px;
+}
+.pagina-publica .service {
+  width: 100%;
+  border: 1.5px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+  padding: 14px;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  color: var(--ink);
+}
+.pagina-publica .service:hover {
+  border-color: #bca9f5;
+}
+.pagina-publica .service.selected {
+  border-color: var(--p);
+  background: #faf8ff;
+  box-shadow: 0 0 0 3px #6938ef12;
+}
+.pagina-publica .service-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: #eee9ff;
+  color: var(--p);
+  font-size: 18px;
+}
+.pagina-publica .service h3 {
+  font-size: 13px;
+  margin: 0 0 3px;
+}
+.pagina-publica .service small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.pagina-publica .price {
+  text-align: right;
+  font-weight: 700;
+  font-size: 13px;
+}
+.pagina-publica .price small {
+  display: block;
+  color: var(--green);
+  font-size: 9px;
+  margin-top: 3px;
+}
+.pagina-publica .calendar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 12px;
+}
+.pagina-publica .calendar-head b {
+  font-size: 13px;
+}
+.pagina-publica .calendar-head button {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  color: var(--ink);
+}
+.pagina-publica .weekdays,
+.pagina-publica .calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+.pagina-publica .weekdays span {
+  text-align: center;
+  color: #96909f;
+  font-size: 9px;
+  font-weight: 700;
+}
+.pagina-publica .day {
+  aspect-ratio: 1;
+  border: 0;
+  background: #fff;
+  border-radius: 9px;
+  color: var(--ink);
+  font-size: 11px;
+}
+.pagina-publica .day:hover:not(:disabled) {
+  background: #eee9ff;
+  color: var(--p);
+}
+.pagina-publica .day.selected {
+  background: var(--p);
+  color: #fff;
+  font-weight: 700;
+}
+.pagina-publica .day:disabled {
+  color: #cbc6d1;
+  cursor: not-allowed;
+}
+.pagina-publica .slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 17px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.pagina-publica .slot {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 9px;
+  padding: 8px 11px;
+  font-size: 11px;
+  color: var(--ink);
+}
+.pagina-publica .slot.selected {
+  background: var(--p);
+  border-color: var(--p);
+  color: #fff;
+}
+.pagina-publica .form {
+  display: grid;
+  gap: 13px;
+}
+.pagina-publica .field {
+  display: grid;
+  gap: 6px;
+}
+.pagina-publica .field label {
+  font-size: 11px;
+  font-weight: 700;
+}
+.pagina-publica .field input {
+  height: 43px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 12px;
+  outline: 0;
+}
+.pagina-publica .field input:focus {
+  border-color: var(--p);
+  box-shadow: 0 0 0 3px #6938ef16;
+}
+.pagina-publica .notice {
+  display: flex;
+  gap: 10px;
+  background: #f0ecff;
+  color: #51466b;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 10px;
+  line-height: 1.55;
+}
+.pagina-publica .review {
+  display: grid;
+  gap: 9px;
+}
+.pagina-publica .review-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+}
+.pagina-publica .review-row span {
+  color: var(--muted);
+}
+.pagina-publica .pix {
+  margin-top: 17px;
+  border: 1px solid #dcd2fb;
+  background: #faf8ff;
+  border-radius: 13px;
+  padding: 15px;
+}
+.pagina-publica .pix-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pagina-publica .pix-icon {
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #e8e1ff;
+  color: var(--p);
+  font-weight: 700;
+}
+.pagina-publica .pix h3 {
+  font-size: 12px;
+  margin: 0;
+}
+.pagina-publica .pix p {
+  font-size: 9px;
+  color: var(--muted);
+  margin: 3px 0 0;
+}
+.pagina-publica .terms {
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 13px;
+}
+.pagina-publica .actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 22px;
+}
+.pagina-publica .btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  background: var(--p);
+  color: #fff;
+  font-weight: 700;
+  font-size: 11px;
+}
+.pagina-publica .btn:hover {
+  background: var(--p2);
+}
+.pagina-publica .btn.back {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.pagina-publica .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pagina-publica .aside h3 {
+  font-size: 13px;
+  margin: 0 0 15px;
+}
+.pagina-publica .summary-empty {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+  padding: 26px 8px;
+}
+.pagina-publica .summary-service {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 13px;
+}
+.pagina-publica .summary-service i {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #eee9ff;
+  color: var(--p);
+  display: grid;
+  place-items: center;
+  font-style: normal;
+}
+.pagina-publica .summary-service b {
+  font-size: 11px;
+  display: block;
+}
+.pagina-publica .summary-service small {
+  font-size: 9px;
+  color: var(--muted);
+}
+.pagina-publica .summary-lines {
+  display: grid;
+  gap: 10px;
+  padding: 14px 0;
+}
+.pagina-publica .summary-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+.pagina-publica .summary-line span {
+  color: var(--muted);
+}
+.pagina-publica .total {
+  border-top: 1px solid var(--line);
+  padding-top: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+.pagina-publica .total small {
+  font-size: 9px;
+  color: var(--muted);
+  display: block;
+}
+.pagina-publica .total b {
+  font-size: 17px;
+  color: var(--p);
+}
+.pagina-publica .secure {
+  text-align: center;
+  color: var(--muted);
+  font-size: 9px;
+  margin-top: 13px;
+}
+.pagina-publica .pix-screen {
+  text-align: center;
+}
+.pagina-publica .qr {
+  width: 150px;
+  height: 150px;
+  margin: 17px auto;
+  background: repeating-conic-gradient(#1f1b29 0 25%, #fff 0 50%) 50%/14px
+    14px;
+  border: 12px solid #fff;
+  box-shadow: 0 0 0 1px var(--line);
+  border-radius: 7px;
+}
+.pagina-publica .timer {
+  color: #b16100;
+  background: #fff2d9;
+  border-radius: 8px;
+  padding: 7px 10px;
+  display: inline-block;
+  font-size: 10px;
+}
+.pagina-publica .copy-box {
+  display: flex;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 15px auto;
+  max-width: 380px;
+}
+.pagina-publica .copy-box input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  padding: 10px;
+  background: #f7f5fa;
+  font-size: 9px;
+  color: var(--muted);
+}
+.pagina-publica .copy-box button {
+  border: 0;
+  background: var(--p);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 13px;
+}
+.pagina-publica .confirm {
+  text-align: center;
+  padding: 30px 0;
+}
+.pagina-publica .check {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #def7ee;
+  color: var(--green);
+  font-size: 32px;
+  margin: 0 auto 16px;
+  animation: pop 0.45s ease;
+}
+@keyframes pop {
+  50% {
+    transform: scale(1.12);
+  }
+}
+.pagina-publica .confirm h2 {
+  font-size: 23px;
+}
+.pagina-publica .confirm-card {
+  max-width: 400px;
+  margin: 20px auto;
+  text-align: left;
+  background: #f8f7fa;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 14px;
+}
+.pagina-publica .whats {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  max-width: 400px;
+  margin: auto;
+  background: #e5f8f0;
+  color: #17694f;
+  border-radius: 11px;
+  padding: 11px;
+  text-align: left;
+  font-size: 10px;
+}
+.pagina-publica .footer {
+  text-align: center;
+  color: #8f8998;
+  font-size: 10px;
+  padding: 0 20px 30px;
+}
+.pagina-publica .footer b {
+  color: var(--p);
+}
+.pagina-publica .top {
+  height: 68px;
+  justify-content: flex-start;
+  padding: 0 max(24px, calc((100vw - 1080px) / 2));
+  background: color-mix(in srgb, #fff 92%, transparent);
+  backdrop-filter: blur(14px);
+  position: relative;
+  z-index: 5;
+}
+.pagina-publica .brand {
+  font-size: 17px;
+}
+.pagina-publica .brand img {
+  width: 31px;
+  height: 31px;
+}
+.pagina-publica .hero {
+  position: relative;
+  overflow: hidden;
+  padding: 42px 24px 92px;
+  background: linear-gradient(
+    120deg,
+    #201438 0%,
+    var(--p) 58%,
+    #8f62eb 100%
+  );
+}
+.pagina-publica .hero:before {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  right: -120px;
+  top: -260px;
+  background: #ffffff0d;
+}
+.pagina-publica .hero:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#fff 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.06;
+}
+.pagina-publica .hero-in {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+}
+.pagina-publica .avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f1bd9c, #82513f);
+  box-shadow: none;
+}
+.pagina-publica .hero h1 {
+  font-size: 28px;
+  letter-spacing: -0.03em;
+}
+.pagina-publica .hero p {
+  font-size: 12px;
+}
+.pagina-publica .hero-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 11px;
+}
+.pagina-publica .hero-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid #ffffff24;
+  border-radius: 8px;
+  background: #ffffff0e;
+  font-size: 9px;
+  color: #fff;
+}
+.pagina-publica .verified {
+  margin: 0;
+  padding: 6px 9px;
+  border: 1px solid #ffffff24;
+  background: #ffffff0e;
+  border-radius: 8px;
+}
+.pagina-publica .shell {
+  max-width: 1080px;
+  margin: -54px auto 60px;
+  padding: 0 24px;
+  position: relative;
+  z-index: 2;
+}
+.pagina-publica .booking {
+  grid-template-columns: minmax(0, 1fr) 315px;
+  gap: 20px;
+}
+.pagina-publica .main,
+.pagina-publica .aside {
+  border-color: #e7e3ec;
+  box-shadow: 0 24px 70px -42px #25183f99;
+}
+.pagina-publica .main {
+  border-radius: 20px;
+  padding: 30px;
+  min-height: 570px;
+}
+.pagina-publica .aside {
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+}
+.pagina-publica .aside-brand {
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pagina-publica .aside-brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #eee9ff;
+  display: grid;
+  place-items: center;
+  color: var(--p);
+  font-size: 11px;
+  font-weight: 700;
+}
+.pagina-publica .aside-brand b {
+  display: block;
+  font-size: 11px;
+}
+.pagina-publica .aside-brand small {
+  font-size: 9px;
+  color: var(--muted);
+}
+.pagina-publica .aside-content {
+  padding: 18px;
+}
+.pagina-publica .aside-content > h3 {
+  font-size: 12px;
+  margin: 0 0 15px;
+}
+.pagina-publica .aside-policy {
+  margin: 0 18px 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 9px;
+}
+.pagina-publica .policy-line {
+  display: flex;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+.pagina-publica .policy-line i {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #edf8f4;
+  color: var(--green);
+  font-style: normal;
+  flex: none;
+}
+.pagina-publica .steps {
+  position: relative;
+  margin-bottom: 32px;
+}
+.pagina-publica .step {
+  font-size: 9px;
+}
+.pagina-publica .step i {
+  width: 27px;
+  height: 27px;
+}
+.pagina-publica .step:after {
+  margin-inline: 9px;
+}
+.pagina-publica .screen h2 {
+  font-size: 22px;
+  letter-spacing: -0.025em;
+}
+.pagina-publica .screen h2 + p.intro {
+  font-size: 11px;
+  margin-bottom: 23px;
+}
+.pagina-publica .services {
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+.pagina-publica .service {
+  min-height: 91px;
+  border-radius: 14px;
+  padding: 14px;
+  grid-template-columns: 40px 1fr;
+  position: relative;
+  align-items: start;
+}
+.pagina-publica .service .price {
+  grid-column: 2;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pagina-publica .service .price small {
+  display: inline;
+  margin: 0;
+}
+.pagina-publica .service-icon {
+  grid-row: 1 / span 2;
+  width: 40px;
+  height: 40px;
+}
+.pagina-publica .service.selected:after {
+  content: "✓";
+  position: absolute;
+  right: 11px;
+  top: 11px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--p);
+  color: #fff;
+  font-size: 10px;
+}
+.pagina-publica .calendar-head {
+  background: #faf9fc;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 7px 9px;
+  margin-top: 18px;
+}
+.pagina-publica .calendar-head button {
+  border: 0;
+  background: #fff;
+}
+.pagina-publica .weekdays {
+  margin: 15px 0 5px;
+}
+.pagina-publica .day {
+  border-radius: 10px;
+  font-weight: 600;
+}
+.pagina-publica .day.selected {
+  box-shadow: 0 7px 18px -10px var(--p);
+}
+.pagina-publica .slots {
+  gap: 8px;
+}
+.pagina-publica .slot {
+  min-width: 65px;
+  text-align: center;
+}
+.pagina-publica .field input {
+  background: #faf9fc;
+}
+.pagina-publica .notice {
+  border: 1px solid #e3dcfa;
+}
+.pagina-publica .pix {
+  padding: 17px;
+}
+.pagina-publica .actions {
+  padding-top: 5px;
+}
+.pagina-publica .btn {
+  min-height: 42px;
+  padding: 11px 17px;
+  transition:
+    transform 0.18s,
+    background 0.18s;
+}
+.pagina-publica .btn:hover {
+  transform: translateY(-1px);
+}
+.pagina-publica .summary-service {
+  padding-bottom: 15px;
+}
+.pagina-publica .summary-line {
+  font-size: 10px;
+}
+.pagina-publica .total {
+  padding-top: 15px;
+}
+.pagina-publica .total b {
+  font-size: 18px;
+}
+.pagina-publica .qr {
+  background: repeating-conic-gradient(#211a2c 0 25%, #fff 0 50%) 50%/13px
+    13px;
+}
+.pagina-publica .confirm-card {
+  background: #faf9fc;
+}
+.pagina-publica .footer {
+  border-top: 1px solid var(--line);
+  padding: 25px 20px;
+  background: #fff;
+}
+.pagina-publica .mobile-summary-toggle {
+  display: none;
+}
+@media (max-width: 720px) {
+  .pagina-publica .top {
+      height: 60px;
+      padding: 0 17px;
+  }
+  .pagina-publica .hero {
+      padding: 28px 17px 64px;
+  }
+  .pagina-publica .hero-in {
+      padding: 0;
+  }
+  .pagina-publica .avatar {
+      width: 62px;
+      height: 62px;
+      border-radius: 17px;
+  }
+  .pagina-publica .hero h1 {
+      font-size: 22px;
+  }
+  .pagina-publica .hero-detail:nth-of-type(2) {
+      display: none;
+  }
+  .pagina-publica .shell {
+      padding: 0 11px;
+      margin-top: -38px;
+  }
+  .pagina-publica .booking {
+      grid-template-columns: 1fr;
+      gap: 11px;
+  }
+  .pagina-publica .aside {
+      position: static;
+      grid-row: 1;
+      border-radius: 16px;
+  }
+  .pagina-publica .aside-brand,
+  .pagina-publica .aside-policy {
+      display: none;
+  }
+  .pagina-publica .aside-content {
+      padding: 14px 16px;
+  }
+  .pagina-publica .aside-content > h3 {
+      margin-bottom: 8px;
+  }
+  .pagina-publica .main {
+      padding: 20px 17px;
+      border-radius: 16px;
+      min-height: 520px;
+  }
+  .pagina-publica .steps {
+      margin-bottom: 25px;
+  }
+  .pagina-publica .step span {
+      display: none;
+  }
+  .pagina-publica .services {
+      grid-template-columns: 1fr;
+  }
+  .pagina-publica .service {
+      min-height: auto;
+      grid-template-columns: 38px 1fr auto;
+      align-items: center;
+  }
+  .pagina-publica .service .price {
+      grid-column: 3;
+      display: block;
+      text-align: right;
+  }
+  .pagina-publica .service .price small {
+      display: block;
+  }
+  .pagina-publica .service.selected:after {
+      display: none;
+  }
+  .pagina-publica .summary-empty {
+      padding: 3px;
+  }
+  .pagina-publica .aside:has(.summary-empty) {
+      display: none;
+  }
+  .pagina-publica .screen h2 {
+      font-size: 20px;
+  }
+}
+.pagina-publica .ui-icon {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pagina-publica .service-icon .ui-icon {
+  width: 20px;
+  height: 20px;
+}
+.pagina-publica .verified .ui-icon,
+.pagina-publica .hero-detail .ui-icon {
+  width: 12px;
+  height: 12px;
+}
+.pagina-publica .policy-line .ui-icon {
+  width: 12px;
+  height: 12px;
+}
+.pagina-publica .notice .ui-icon {
+  width: 18px;
+  height: 18px;
+}
+.pagina-publica .summary-service i .ui-icon {
+  width: 17px;
+  height: 17px;
+}
+.pagina-publica .pix-icon .ui-icon {
+  width: 18px;
+  height: 18px;
+}
+.pagina-publica.font-rounded {
+  font-family: "Trebuchet MS", system-ui, sans-serif;
+}
+.pagina-publica.font-serif {
+  font-family: Georgia, "Times New Roman", serif;
+}
+.pagina-publica.cards-flat .service,
+.pagina-publica.cards-flat .main,
+.pagina-publica.cards-flat .aside {
+  border-radius: 4px;
+  box-shadow: none;
+}
+.pagina-publica.cards-outline .service {
+  border-color: var(--p);
+  background: transparent;
+}
+.pagina-publica.cards-soft .service {
+  box-shadow: 0 9px 24px -22px #291c44;
+}
+.pagina-publica .avatar.logo-circle {
+  border-radius: 50%;
+}
+.pagina-publica .avatar.logo-square {
+  border-radius: 4px;
+}
+.pagina-publica .avatar.logo-rounded {
+  border-radius: 20px;
+}
+.pagina-publica .shell.compact {
+  max-width: 900px;
+}
+.pagina-publica .shell.compact .booking {
+  grid-template-columns: minmax(0, 1fr) 280px;
+}
+
+/* Ajustes da versao React: o arredondamento vem da identidade escolhida no painel
+   e o link de retorno nao existia quando a pagina era um HTML separado. */
+.pagina-publica .btn,
+.pagina-publica .slot,
+.pagina-publica .service {
+  border-radius: var(--raio, 10px);
+}
+
+.pagina-publica .voltar-painel {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  z-index: 5;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--p);
+  text-decoration: none;
+}
+
+.pagina-publica {
+  position: relative;
+}

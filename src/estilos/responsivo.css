@@ -1,0 +1,146 @@
+/* Ajustes responsivos do painel, do menor para o maior impacto. */
+
+@media (max-width:950px) {
+  .brand-editor {
+    grid-template-columns: 1fr;
+  }
+  .page-preview {
+    position: static;
+    max-width: 380px;
+    width: 100%;
+    margin: auto;
+  }
+}
+
+@media (max-width:600px) {
+  .booking-summary {
+    grid-template-columns: 1fr;
+  }
+  .booking-modal-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .booking-modal-footer .modal-actions {
+    width: 100%;
+  }
+  .booking-modal-footer .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width:1050px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .service-grid,
+  .client-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grid-2,
+  .calendar-layout,
+  .finance-layout {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-bottom {
+    grid-template-columns: 1fr 1fr;
+  }
+  .service-summary,
+  .client-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width:760px) {
+  .app,
+  .app.sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+  .sidebar,
+  .app.sidebar-collapsed .sidebar {
+    position: fixed;
+    left: -250px;
+    z-index: 25;
+    width: 238px;
+    padding: 25px 16px;
+    transition: left .25s;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .app.sidebar-collapsed .brand {
+    font-size: 21px;
+    padding: 0 10px 28px;
+  }
+  .app.sidebar-collapsed .nav span,
+  .app.sidebar-collapsed .profile>div:last-child {
+    display: block;
+  }
+  .app.sidebar-collapsed .nav button,
+  .app.sidebar-collapsed .nav a {
+    justify-content: flex-start;
+    padding: 11px 12px;
+  }
+  .app.sidebar-collapsed .profile {
+    justify-content: flex-start;
+    padding: 18px 8px 0;
+  }
+  .sidebar-backdrop.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: 0;
+    background: #0b091180;
+    z-index: 24;
+  }
+  .topbar {
+    padding: 0 16px;
+  }
+  .search {
+    display: none;
+  }
+  .content {
+    padding: 22px 16px;
+  }
+  .stats,
+  .finance-grid,
+  .service-grid,
+  .client-grid,
+  .dashboard-bottom,
+  .service-summary,
+  .client-summary,
+  .agenda-summary {
+    grid-template-columns: 1fr;
+  }
+  .page-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .field.full {
+    grid-column: auto;
+  }
+  .toolbar,
+  .client-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .toolbar-left,
+  .toolbar-right {
+    flex-wrap: wrap;
+  }
+  .filter-input {
+    width: 100%;
+  }
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-nav {
+    display: flex;
+    overflow: auto;
+  }
+  .settings-nav button {
+    white-space: nowrap;
+  }
+}
