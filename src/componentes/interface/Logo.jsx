@@ -1,29 +1,15 @@
-// Marca desenhada em SVG, sem arquivo de imagem.
+// O simbolo vem de public/. A palavra "sinaliza" e texto ao lado, e nao parte
+// da imagem, para o menu recolhido poder esconder so o nome e manter o simbolo.
 //
-// O simbolo usa o roxo da marca; o nome herda a cor de quem o contem
-// (branco no menu escuro, escuro no topo da pagina publica). Por isso o nome
-// e texto de verdade, e nao parte do desenho: assim o menu recolhido consegue
-// esconder so a palavra e manter o simbolo.
-export function Logo() {
+// "clara" = versao branca, para o menu escuro do painel.
+// "escura" = versao roxa, para o topo branco da pagina publica.
+export function Logo({ variante = 'escura' }) {
+  const arquivo = variante === 'clara' ? '/logo-branca.png' : '/logo.png'
+
   return (
     <div className="brand">
-      <SimboloSinaliza />
+      <img src={arquivo} alt="" />
       <span>sinaliza</span>
     </div>
-  )
-}
-
-function SimboloSinaliza() {
-  return (
-    <svg viewBox="0 0 32 32" role="img" aria-label="sinaliza">
-      <path
-        d="M20.6 10.1c0-3-3.2-4.8-6.3-3.7-2.8 1-4.1 4.1-2.8 6.7.7 1.3 1.9 2.3 3.4 2.7l2.5.8c1.5.4 2.7 1.4 3.4 2.7 1.3 2.6 0 5.7-2.8 6.7-3.1 1.1-6.3-.7-6.3-3.7"
-        fill="none"
-        stroke="#6938ef"
-        strokeWidth="4.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   )
 }

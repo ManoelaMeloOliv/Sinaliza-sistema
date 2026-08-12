@@ -18,7 +18,7 @@ export function BarraLateral({ aberta, aoNavegar }) {
 
   return (
     <aside className={aberta ? 'sidebar open' : 'sidebar'}>
-      <Logo />
+      <Logo variante="clara" />
 
       <nav className="nav">
         {ATALHOS.map(atalho => (
