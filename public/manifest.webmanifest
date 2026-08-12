@@ -1,0 +1,16 @@
+{
+  "name": "Sinaliza",
+  "short_name": "Sinaliza",
+  "description": "Painel de agendamentos e pagina publica de reservas.",
+  "lang": "pt-BR",
+  "start_url": "/painel",
+  "display": "standalone",
+  "background_color": "#f5f4f9",
+  "theme_color": "#6938ef",
+  "icons": [
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon-32.png", "sizes": "32x32", "type": "image/png" }
+  ]
+}

@@ -15,6 +15,7 @@ npm run dev
 ## Estrutura
 
 ```
+public/                    logotipo, icones e manifest (servidos na raiz do site)
 src/
   principal.jsx            ponto de entrada
   Aplicacao.jsx            rotas
@@ -61,6 +62,19 @@ dados (`nome`, `preco`, `situacao`) e funcoes (`formatarMoeda`, `calcularSinal`)
 
 A unica excecao sao os hooks, que precisam do prefixo `use` exigido pelo React: `useAplicacao`,
 `useArmazenamentoLocal`, `useTema`.
+
+## Logotipo e icones
+
+| Arquivo | Onde e usado |
+| --- | --- |
+| `logo.png` | topo da pagina publica (fundo claro) |
+| `logo-branca.png` | menu lateral do painel (fundo escuro) |
+| `favicon-32.png` | aba do navegador |
+| `apple-touch-icon.png` | atalho no iOS |
+| `icon-512.png`, `icon-maskable-512.png` | instalacao como aplicativo (`manifest.webmanifest`) |
+
+A palavra "sinaliza" e escrita como texto ao lado do simbolo, nao faz parte da imagem. E assim que o
+menu recolhido consegue esconder o nome e manter apenas o simbolo.
 
 ## Dados
 
