@@ -1089,3 +1089,65 @@
 .pagina-publica {
   position: relative;
 }
+
+/* Horarios da etapa 2. O original era uma fileira de botoes pequenos encostados
+   a esquerda; aqui eles ganham titulo, tamanho de toque e ocupam a largura toda. */
+.pagina-publica .slots-bloco {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.pagina-publica .slots-bloco h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.pagina-publica .slots-bloco p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.pagina-publica .slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 9px;
+  margin-top: 14px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.pagina-publica .slot {
+  min-height: 46px;
+  padding: 0 10px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  transition: border-color .15s, background .15s, color .15s, box-shadow .15s;
+}
+
+.pagina-publica .slot:hover {
+  border-color: var(--p);
+  color: var(--p);
+  background: color-mix(in srgb, var(--p) 5%, #fff);
+}
+
+.pagina-publica .slot.selected {
+  background: var(--p);
+  border-color: var(--p);
+  color: #fff;
+  box-shadow: 0 6px 16px -8px var(--p);
+}
+
+@media (max-width: 720px) {
+  .pagina-publica .slots {
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  }
+}

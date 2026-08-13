@@ -1,9 +1,6 @@
 import { formatarMoeda } from '../../utilitarios/formatadores'
-import { calcularSinal } from '../../utilitarios/valores'
 
-export function EtapaConfirmacao({ servico, quando, nome, nomeDaLoja }) {
-  const sinal = calcularSinal(servico.preco)
-
+export function EtapaConfirmacao({ servico, sinal, quando, nome, nomeDaLoja }) {
   return (
     <div className="screen confirm active">
       <div className="check">✓</div>

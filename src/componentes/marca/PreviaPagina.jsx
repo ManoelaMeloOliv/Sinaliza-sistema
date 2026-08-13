@@ -1,5 +1,5 @@
 import { formatarMoeda, iniciais } from '../../utilitarios/formatadores'
-import { PERCENTUAL_SINAL } from '../../utilitarios/valores'
+import { regraDeSinal, rotuloDoSinal } from '../../utilitarios/valores'
 
 // Fundo do cabecalho: a capa tem prioridade; senao segue o estilo escolhido.
 function fundoDoCabecalho(marca) {
@@ -9,7 +9,7 @@ function fundoDoCabecalho(marca) {
   return `linear-gradient(135deg,${marca.corPrincipal},${marca.corDestaque})`
 }
 
-export function PreviaPagina({ marca, servicos }) {
+export function PreviaPagina({ marca, servicos, configuracoes }) {
   const claro = marca.estiloCabecalho === 'light'
   const legenda = [
     marca.mostrarVerificado && 'Perfil verificado',
@@ -57,7 +57,7 @@ export function PreviaPagina({ marca, servicos }) {
             <div className="preview-service" key={servico.id}>
               <div>
                 <b>{servico.nome}</b>
-                <small>{servico.duracao} · Sinal de {PERCENTUAL_SINAL * 100}%</small>
+                <small>{servico.duracao} · {rotuloDoSinal(regraDeSinal(servico, configuracoes))}</small>
               </div>
               <span>{formatarMoeda(servico.preco)}</span>
             </div>

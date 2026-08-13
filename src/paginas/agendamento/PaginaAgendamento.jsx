@@ -10,6 +10,7 @@ import { EtapaPix } from '../../componentes/paginaPublica/EtapaPix'
 import { EtapaConfirmacao } from '../../componentes/paginaPublica/EtapaConfirmacao'
 import { ResumoLateral } from '../../componentes/paginaPublica/ResumoLateral'
 import { useAplicacao } from '../../ganchos/useAplicacao'
+import { calcularSinal, regraDeSinal, rotuloDoSinal } from '../../utilitarios/valores'
 
 const SERVICO = 0
 const HORARIO = 1
@@ -19,11 +20,12 @@ const PIX = 4
 const CONFIRMACAO = 5
 
 export function PaginaAgendamento() {
-  const { servicos, marca, perfil, definirAgendamentos, definirClientes } = useAplicacao()
+  const { servicos, marca, perfil, configuracoes, definirAgendamentos, definirClientes } = useAplicacao()
   const publicados = servicos.filter(servico => servico.publicado)
 
   const [etapa, definirEtapa] = useState(SERVICO)
-  const [servico, definirServico] = useState(null)
+  // Guardamos o id, e nao o objeto: assim o preco acompanha o que o painel mudar.
+  const [servicoId, definirServicoId] = useState(null)
   const [dia, definirDia] = useState(null)
   const [horario, definirHorario] = useState(null)
   const [dados, definirDados] = useState({ nome: '', telefone: '', email: '' })
@@ -32,9 +34,20 @@ export function PaginaAgendamento() {
     document.title = `Agende seu horário — ${marca.nome}`
   }, [marca.nome])
 
+  const servico = servicos.find(item => item.id === servicoId) ?? null
+
+  // Se o servico sair do ar no meio da reserva, voltamos para a escolha
+  // em vez de quebrar nas etapas seguintes.
+  const etapaVisivel = servico || etapa === SERVICO ? etapa : SERVICO
+
   const quando = dia
     ? `${dia} de agosto${horario ? ` · ${horario}` : ''}`
     : 'Horário a escolher'
+
+  // A regra de sinal do servico escolhido vale para todas as etapas seguintes.
+  const regra = regraDeSinal(servico, configuracoes)
+  const sinal = calcularSinal(servico?.preco, regra)
+  const rotuloSinal = rotuloDoSinal(regra)
 
   const escolherDia = novoDia => {
     definirDia(novoDia)
@@ -86,18 +99,18 @@ export function PaginaAgendamento() {
       <main className={marca.largura === 'compact' ? 'shell compact' : 'shell'}>
         <div className="booking">
           <section className="main">
-            {etapa < CONFIRMACAO && <PassosAgendamento etapa={Math.min(etapa, REVISAO)} />}
+            {etapaVisivel < CONFIRMACAO && <PassosAgendamento etapa={Math.min(etapaVisivel, REVISAO)} />}
 
-            {etapa === SERVICO && (
+            {etapaVisivel === SERVICO && (
               <EtapaServico
                 servicos={publicados}
                 servicoEscolhido={servico}
-                aoEscolher={definirServico}
+                aoEscolher={escolhido => definirServicoId(escolhido.id)}
                 aoAvancar={() => definirEtapa(HORARIO)}
               />
             )}
 
-            {etapa === HORARIO && (
+            {etapaVisivel === HORARIO && (
               <EtapaHorario
                 dia={dia}
                 horario={horario}
@@ -108,7 +121,7 @@ export function PaginaAgendamento() {
               />
             )}
 
-            {etapa === DADOS && (
+            {etapaVisivel === DADOS && (
               <EtapaDados
                 dados={dados}
                 aoMudar={alteracao => definirDados(atual => ({ ...atual, ...alteracao }))}
@@ -117,9 +130,11 @@ export function PaginaAgendamento() {
               />
             )}
 
-            {etapa === REVISAO && (
+            {etapaVisivel === REVISAO && (
               <EtapaRevisao
                 servico={servico}
+                sinal={sinal}
+                rotuloSinal={rotuloSinal}
                 quando={quando}
                 profissional={perfil.profissional}
                 nomeDaLoja={marca.nome}
@@ -129,11 +144,12 @@ export function PaginaAgendamento() {
               />
             )}
 
-            {etapa === PIX && <EtapaPix servico={servico} aoConfirmar={confirmar} />}
+            {etapaVisivel === PIX && <EtapaPix sinal={sinal} aoConfirmar={confirmar} />}
 
-            {etapa === CONFIRMACAO && (
+            {etapaVisivel === CONFIRMACAO && (
               <EtapaConfirmacao
                 servico={servico}
+                sinal={sinal}
                 quando={quando}
                 nome={dados.nome}
                 nomeDaLoja={marca.nome}
@@ -141,7 +157,7 @@ export function PaginaAgendamento() {
             )}
           </section>
 
-          {etapa < CONFIRMACAO && <ResumoLateral marca={marca} servico={servico} quando={quando} />}
+          {etapaVisivel < CONFIRMACAO && <ResumoLateral marca={marca} servico={servico} quando={quando} sinal={sinal} rotuloSinal={rotuloSinal} />}
         </div>
       </main>
 

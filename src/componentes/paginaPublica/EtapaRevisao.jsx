@@ -1,7 +1,6 @@
 import { formatarMoeda } from '../../utilitarios/formatadores'
-import { calcularSinal, PERCENTUAL_SINAL } from '../../utilitarios/valores'
 
-export function EtapaRevisao({ servico, quando, profissional, nomeDaLoja, mostrarPoliticas, aoVoltar, aoAvancar }) {
+export function EtapaRevisao({ servico, sinal, rotuloSinal, quando, profissional, nomeDaLoja, mostrarPoliticas, aoVoltar, aoAvancar }) {
   return (
     <div className="screen active">
       <h2>Revise antes de reservar</h2>
@@ -25,9 +24,9 @@ export function EtapaRevisao({ servico, quando, profissional, nomeDaLoja, mostra
         <div className="total">
           <span>
             <small>Pague agora</small>
-            Sinal de {PERCENTUAL_SINAL * 100}%
+            {rotuloSinal}
           </span>
-          <b>{formatarMoeda(calcularSinal(servico.preco))}</b>
+          <b>{formatarMoeda(sinal)}</b>
         </div>
       </div>
 

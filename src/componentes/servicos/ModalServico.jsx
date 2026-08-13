@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import { ModalBase } from '../interface/ModalBase'
 import { Campo } from '../interface/Campo'
+import { SINAL_FIXO, SINAL_PERCENTUAL, TIPOS_DE_SINAL } from '../../utilitarios/valores'
 
 const DURACOES = ['30min', '40min', '1h', '1h30', '1h45', '2h']
 
-export function ModalServico({ servico, aoSalvar, aoFechar }) {
+export function ModalServico({ servico, sinalPadrao, aoSalvar, aoFechar }) {
   const editando = Boolean(servico)
   const [formulario, definirFormulario] = useState({
     nome: servico?.nome ?? '',
     duracao: servico?.duracao ?? '1h',
     preco: servico?.preco ?? '',
-    tipoDeSinal: servico?.tipoDeSinal ?? '30% do serviço',
+    tipoDeSinal: servico?.tipoDeSinal ?? sinalPadrao ?? SINAL_PERCENTUAL,
+    valorDoSinal: servico?.valorDoSinal ?? '',
     publicado: servico ? servico.publicado : true,
     descricao: servico?.descricao ?? '',
   })
@@ -18,13 +20,22 @@ export function ModalServico({ servico, aoSalvar, aoFechar }) {
   const atualizar = campo => evento =>
     definirFormulario(atual => ({ ...atual, [campo]: evento.target.value }))
 
+  const sinalFixo = formulario.tipoDeSinal === SINAL_FIXO
+
+  const enviar = () =>
+    aoSalvar({
+      ...formulario,
+      preco: Number(formulario.preco),
+      valorDoSinal: sinalFixo ? Number(formulario.valorDoSinal) || 0 : null,
+    })
+
   return (
     <ModalBase
       etiqueta="Catálogo"
       titulo={editando ? 'Editar serviço' : 'Novo serviço'}
       largo
       aoFechar={aoFechar}
-      aoEnviar={() => aoSalvar({ ...formulario, preco: Number(formulario.preco) })}
+      aoEnviar={enviar}
       rotuloEnviar={editando ? 'Salvar serviço' : 'Adicionar serviço'}
     >
       <Campo rotulo="Nome do serviço" largo>
@@ -43,11 +54,24 @@ export function ModalServico({ servico, aoSalvar, aoFechar }) {
 
       <Campo rotulo="Tipo de sinal">
         <select value={formulario.tipoDeSinal} onChange={atualizar('tipoDeSinal')}>
-          <option>30% do serviço</option>
-          <option>Valor fixo</option>
-          <option>Sem sinal</option>
+          {TIPOS_DE_SINAL.map(tipo => <option key={tipo}>{tipo}</option>)}
         </select>
       </Campo>
+
+      {/* So faz sentido pedir o valor quando o sinal e fixo. */}
+      {sinalFixo && (
+        <Campo rotulo="Valor do sinal (R$)">
+          <input
+            required
+            type="number"
+            min="0"
+            max={formulario.preco || undefined}
+            value={formulario.valorDoSinal}
+            onChange={atualizar('valorDoSinal')}
+            placeholder="50"
+          />
+        </Campo>
+      )}
 
       <Campo rotulo="Disponibilidade">
         <select

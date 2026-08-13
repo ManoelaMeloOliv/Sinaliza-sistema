@@ -41,17 +41,23 @@ export function EtapaHorario({ dia, horario, aoEscolherDia, aoEscolherHorario, a
       </div>
 
       {dia && (
-        <div className="slots">
-          {HORARIOS_DISPONIVEIS.map(hora => (
-            <button
-              className={horario === hora ? 'slot selected' : 'slot'}
-              key={hora}
-              onClick={() => aoEscolherHorario(hora)}
-            >
-              {hora}
-            </button>
-          ))}
-        </div>
+        <section className="slots-bloco">
+          <h3>Horários disponíveis</h3>
+          <p>Dia {dia} de agosto · {HORARIOS_DISPONIVEIS.length} opções</p>
+
+          <div className="slots">
+            {HORARIOS_DISPONIVEIS.map(hora => (
+              <button
+                className={horario === hora ? 'slot selected' : 'slot'}
+                key={hora}
+                onClick={() => aoEscolherHorario(hora)}
+                aria-pressed={horario === hora}
+              >
+                {hora}
+              </button>
+            ))}
+          </div>
+        </section>
       )}
 
       <div className="actions">

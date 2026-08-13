@@ -44,7 +44,7 @@ const VISIBILIDADE = [
 ]
 
 export function EditorMarca() {
-  const { marca, definirMarca, servicos, mostrarAviso } = useAplicacao()
+  const { marca, definirMarca, servicos, configuracoes, mostrarAviso } = useAplicacao()
   const [rascunho, definirRascunho] = useState(marca)
 
   const alterar = campo => valor => definirRascunho(atual => ({ ...atual, [campo]: valor }))
@@ -195,7 +195,7 @@ export function EditorMarca() {
         </article>
       </div>
 
-      <PreviaPagina marca={rascunho} servicos={servicos} />
+      <PreviaPagina marca={rascunho} servicos={servicos} configuracoes={configuracoes} />
     </div>
   )
 }

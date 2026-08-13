@@ -62,6 +62,7 @@ export const configuracoesIniciais = {
   intervaloEntreServicos: '15 minutos',
   remarcacoesPermitidas: '1 remarcação',
   sinalPadrao: '30% do serviço',
+  valorDoSinalPadrao: 50, // usado quando o sinal padrao e "Valor fixo"
   validadeDoPix: '15 minutos',
   cancelamentoComReembolso: 'Até 24 horas antes',
   contaDeRepasse: 'Nubank · final 4821',

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Campo } from '../interface/Campo'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { formatarMoeda } from '../../utilitarios/formatadores'
-import { PERCENTUAL_SINAL } from '../../utilitarios/valores'
+import { calcularSinal, regraDeSinal, rotuloDoSinal, servicoPorNome } from '../../utilitarios/valores'
 
 // A agenda da demonstracao cobre terca (0) a sabado (4).
 function diaDaSemanaDaAgenda(valorDoCampoData) {
@@ -12,7 +12,7 @@ function diaDaSemanaDaAgenda(valorDoCampoData) {
 }
 
 export function FormularioAgendamento({ modo = 'agendamento', aoConcluir }) {
-  const { servicos, definirAgendamentos, definirClientes, mostrarAviso } = useAplicacao()
+  const { servicos, configuracoes, definirAgendamentos, definirClientes, mostrarAviso } = useAplicacao()
   const bloqueio = modo === 'bloqueio'
 
   const [formulario, definirFormulario] = useState({
@@ -36,7 +36,8 @@ export function FormularioAgendamento({ modo = 'agendamento', aoConcluir }) {
   }
 
   const valor = Number(formulario.preco) || 0
-  const sinal = formulario.situacao === 'Não cobrar' ? 0 : Math.round(valor * PERCENTUAL_SINAL)
+  const regra = regraDeSinal(servicoPorNome(servicos, formulario.servico), configuracoes)
+  const sinal = formulario.situacao === 'Não cobrar' ? 0 : calcularSinal(valor, regra)
 
   const enviar = evento => {
     evento.preventDefault()
@@ -133,7 +134,7 @@ export function FormularioAgendamento({ modo = 'agendamento', aoConcluir }) {
 
             <div className="booking-summary">
               <div><span>Valor do serviço</span><b>{formatarMoeda(valor)}</b></div>
-              <div><span>Sinal previsto (30%)</span><b>{formatarMoeda(sinal)}</b></div>
+              <div><span>{rotuloDoSinal(regra)}</span><b>{formatarMoeda(sinal)}</b></div>
               <div><span>Restante no atendimento</span><b>{formatarMoeda(valor - sinal)}</b></div>
             </div>
           </section>

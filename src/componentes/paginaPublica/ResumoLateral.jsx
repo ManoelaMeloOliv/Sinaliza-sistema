@@ -1,5 +1,4 @@
 import { formatarMoeda, iniciais } from '../../utilitarios/formatadores'
-import { calcularSinal, PERCENTUAL_SINAL } from '../../utilitarios/valores'
 
 const POLITICAS = [
   'Seu horário é confirmado automaticamente após o Pix.',
@@ -7,7 +6,7 @@ const POLITICAS = [
   'Uma remarcação permitida com até 24h de antecedência.',
 ]
 
-export function ResumoLateral({ marca, servico, quando }) {
+export function ResumoLateral({ marca, servico, quando, sinal, rotuloSinal }) {
   return (
     <aside className="aside">
       <div className="aside-brand">
@@ -46,9 +45,9 @@ export function ResumoLateral({ marca, servico, quando }) {
             <div className="total">
               <span>
                 <small>Sinal para reservar</small>
-                {PERCENTUAL_SINAL * 100}% do serviço
+                {rotuloSinal}
               </span>
-              <b>{formatarMoeda(calcularSinal(servico.preco))}</b>
+              <b>{formatarMoeda(sinal)}</b>
             </div>
 
             <div className="secure">Pagamento Pix protegido</div>

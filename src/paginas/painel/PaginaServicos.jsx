@@ -8,7 +8,7 @@ import { formatarMoeda } from '../../utilitarios/formatadores'
 import { SERVICOS_MAIS_AGENDADOS } from '../../dados/dadosPainel'
 
 export function PaginaServicos() {
-  const { servicos, definirServicos, mostrarAviso } = useAplicacao()
+  const { servicos, definirServicos, configuracoes, mostrarAviso } = useAplicacao()
   const [busca, definirBusca] = useState('')
   const [filtro, definirFiltro] = useState('Todos')
   const [ordenado, definirOrdenado] = useState(false)
@@ -101,6 +101,7 @@ export function PaginaServicos() {
           <CartaoServico
             key={servico.id}
             servico={servico}
+            configuracoes={configuracoes}
             posicao={indice + 1}
             aoPublicar={() => alterar(servico.id, { publicado: !servico.publicado })}
             aoEditar={() => definirModal({ servico })}
@@ -111,7 +112,14 @@ export function PaginaServicos() {
         {visiveis.length === 0 && <p className="empty">Nenhum serviço encontrado.</p>}
       </div>
 
-      {modal && <ModalServico servico={modal.servico} aoSalvar={salvar} aoFechar={() => definirModal(null)} />}
+      {modal && (
+        <ModalServico
+          servico={modal.servico}
+          sinalPadrao={configuracoes.sinalPadrao}
+          aoSalvar={salvar}
+          aoFechar={() => definirModal(null)}
+        />
+      )}
     </section>
   )
 }

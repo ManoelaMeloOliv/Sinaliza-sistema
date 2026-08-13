@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { formatarMoeda } from '../../utilitarios/formatadores'
-import { calcularSinal } from '../../utilitarios/valores'
 
 const CHAVE_PIX = '00020126580014BR.GOV.BCB.PIX0136sinaliza-demo-studiodaju'
 const SEGUNDOS = 900 // 15 minutos
@@ -11,7 +10,7 @@ function relogio(restante) {
   return `${minutos}:${segundos}`
 }
 
-export function EtapaPix({ servico, aoConfirmar }) {
+export function EtapaPix({ sinal, aoConfirmar }) {
   const [restante, definirRestante] = useState(SEGUNDOS)
   const [copiado, definirCopiado] = useState(false)
 
@@ -37,7 +36,7 @@ export function EtapaPix({ servico, aoConfirmar }) {
 
       <div className="qr" aria-label="QR Code Pix ilustrativo" />
 
-      <b>{formatarMoeda(calcularSinal(servico.preco))}</b>
+      <b>{formatarMoeda(sinal)}</b>
 
       <div className="copy-box">
         <input readOnly value={CHAVE_PIX} />

@@ -105,9 +105,11 @@
   color: #087a55;
 }
 
+/* Amarelo no mesmo tom do verde de "Ativo": mesma saturacao e luminosidade,
+   so o matiz muda (158° -> 50°). Vale para "Pendente" e "Aguardando". */
 .tag.wait {
-  background: #fff0d7;
-  color: #a76400;
+  background: #faf4d6;
+  color: #7a6708;
 }
 
 .tag.cancel {

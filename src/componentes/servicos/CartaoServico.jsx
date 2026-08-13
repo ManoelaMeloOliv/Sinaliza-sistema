@@ -1,8 +1,10 @@
 import { Interruptor } from '../interface/Interruptor'
 import { formatarMoeda } from '../../utilitarios/formatadores'
-import { calcularSinal, PERCENTUAL_SINAL } from '../../utilitarios/valores'
+import { calcularSinal, regraDeSinal, rotuloDoSinal } from '../../utilitarios/valores'
 
-export function CartaoServico({ servico, posicao, aoPublicar, aoEditar, aoDuplicar, aoExcluir }) {
+export function CartaoServico({ servico, configuracoes, posicao, aoPublicar, aoEditar, aoDuplicar, aoExcluir }) {
+  const regra = regraDeSinal(servico, configuracoes)
+
   return (
     <article className="card service-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
@@ -14,8 +16,8 @@ export function CartaoServico({ servico, posicao, aoPublicar, aoEditar, aoDuplic
       <p>{servico.duracao} · {formatarMoeda(servico.preco)}</p>
 
       <div className="service-row">
-        <span>Sinal de {PERCENTUAL_SINAL * 100}%</span>
-        <b>{formatarMoeda(calcularSinal(servico.preco))}</b>
+        <span>{rotuloDoSinal(regra)}</span>
+        <b>{formatarMoeda(calcularSinal(servico.preco, regra))}</b>
       </div>
 
       <div className="service-actions">

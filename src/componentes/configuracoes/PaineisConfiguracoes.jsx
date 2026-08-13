@@ -2,6 +2,7 @@ import { Campo } from '../interface/Campo'
 import { Interruptor } from '../interface/Interruptor'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { DISPONIBILIDADE_SEMANAL } from '../../dados/dadosPainel'
+import { SINAL_FIXO, TIPOS_DE_SINAL } from '../../utilitarios/valores'
 
 // Linha "texto a esquerda, acao a direita" usada varias vezes nas configuracoes.
 function LinhaDeControle({ titulo, detalhe, children }) {
@@ -124,9 +125,23 @@ export function PainelPagamentos() {
         <div className="form-grid">
           <Campo rotulo="Sinal padrão">
             <select value={configuracoes.sinalPadrao} onChange={alterar('sinalPadrao')}>
-              <option>30% do serviço</option><option>Valor fixo</option><option>Sem sinal</option>
+              {TIPOS_DE_SINAL.map(tipo => <option key={tipo}>{tipo}</option>)}
             </select>
           </Campo>
+
+          {/* So faz sentido pedir o valor quando o sinal padrao e fixo. */}
+          {configuracoes.sinalPadrao === SINAL_FIXO && (
+            <Campo rotulo="Valor do sinal (R$)">
+              <input
+                type="number"
+                min="0"
+                value={configuracoes.valorDoSinalPadrao ?? ''}
+                onChange={alterar('valorDoSinalPadrao')}
+                placeholder="50"
+              />
+            </Campo>
+          )}
+
           <Campo rotulo="Validade do Pix">
             <select value={configuracoes.validadeDoPix} onChange={alterar('validadeDoPix')}>
               <option>15 minutos</option><option>10 minutos</option><option>30 minutos</option>
