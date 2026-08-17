@@ -1,16 +1,17 @@
 import { Etiqueta } from '../interface/Etiqueta'
 import { HORARIOS_DO_DIA } from '../../dados/dadosPainel'
+import { dataDeHoje, dataPorExtenso } from '../../utilitarios/datas'
 
 // Linha do tempo de um dia, marcando os horarios ainda livres.
-export function VisaoDia({ agendamentos }) {
-  const doDia = agendamentos.filter(item => item.dia === 0)
+export function VisaoDia({ dia, agendamentos }) {
+  const doDia = agendamentos.filter(item => item.data === dia)
 
   return (
     <div className="agenda-day-view">
       <div className="day-view-head">
         <div>
-          <span className="eyebrow">Hoje</span>
-          <b>Terça-feira, 19 de agosto</b>
+          <span className="eyebrow">{dia === dataDeHoje() ? 'Hoje' : 'Dia'}</span>
+          <b>{dataPorExtenso(dia)}</b>
         </div>
         <span>{doDia.length} compromissos</span>
       </div>

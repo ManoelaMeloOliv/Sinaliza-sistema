@@ -73,8 +73,6 @@ export const DISPONIBILIDADE_SEMANAL = [
   { periodo: 'Domingo e segunda', detalhe: 'Indisponível' },
 ]
 
-// Semana exibida na agenda (a demonstracao usa uma semana fixa de agosto de 2026).
-export const DIAS_DA_SEMANA = ['TER 19', 'QUA 20', 'QUI 21', 'SEX 22', 'SÁB 23']
+// Faixas de horario que a agenda exibe. Os dias vem das datas reais.
 export const HORARIOS_DA_GRADE = ['09:00', '11:30', '14:00', '16:30']
 export const HORARIOS_DO_DIA = ['09:00', '10:00', '11:30', '13:00', '14:00', '16:30', '18:00']
-export const ROTULO_DA_SEMANA = '19 — 23 de agosto de 2026'

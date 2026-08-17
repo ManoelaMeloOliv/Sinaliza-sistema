@@ -11,6 +11,7 @@ import { EtapaConfirmacao } from '../../componentes/paginaPublica/EtapaConfirmac
 import { ResumoLateral } from '../../componentes/paginaPublica/ResumoLateral'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { calcularSinal, regraDeSinal, rotuloDoSinal } from '../../utilitarios/valores'
+import { dataCurta } from '../../utilitarios/datas'
 
 const SERVICO = 0
 const HORARIO = 1
@@ -20,13 +21,13 @@ const PIX = 4
 const CONFIRMACAO = 5
 
 export function PaginaAgendamento() {
-  const { servicos, marca, perfil, configuracoes, definirAgendamentos, definirClientes } = useAplicacao()
+  const { servicos, agendamentos, marca, perfil, configuracoes, definirAgendamentos, definirClientes } = useAplicacao()
   const publicados = servicos.filter(servico => servico.publicado)
 
   const [etapa, definirEtapa] = useState(SERVICO)
   // Guardamos o id, e nao o objeto: assim o preco acompanha o que o painel mudar.
   const [servicoId, definirServicoId] = useState(null)
-  const [dia, definirDia] = useState(null)
+  const [data, definirData] = useState(null)
   const [horario, definirHorario] = useState(null)
   const [dados, definirDados] = useState({ nome: '', telefone: '', email: '' })
 
@@ -40,17 +41,22 @@ export function PaginaAgendamento() {
   // em vez de quebrar nas etapas seguintes.
   const etapaVisivel = servico || etapa === SERVICO ? etapa : SERVICO
 
-  const quando = dia
-    ? `${dia} de agosto${horario ? ` · ${horario}` : ''}`
+  const quando = data
+    ? `${dataCurta(data)}${horario ? ` · ${horario}` : ''}`
     : 'Horário a escolher'
+
+  // Horarios ja reservados no dia escolhido, para nao oferecer de novo.
+  const ocupadosNoDia = agendamentos
+    .filter(item => item.data === data)
+    .map(item => item.horario)
 
   // A regra de sinal do servico escolhido vale para todas as etapas seguintes.
   const regra = regraDeSinal(servico, configuracoes)
   const sinal = calcularSinal(servico?.preco, regra)
   const rotuloSinal = rotuloDoSinal(regra)
 
-  const escolherDia = novoDia => {
-    definirDia(novoDia)
+  const escolherData = novaData => {
+    definirData(novaData)
     definirHorario(null)
   }
 
@@ -58,11 +64,11 @@ export function PaginaAgendamento() {
   const confirmar = () => {
     definirAgendamentos(atual => [...atual, {
       id: crypto.randomUUID(),
+      data,
       horario,
       cliente: dados.nome,
       servico: servico.nome,
       situacao: 'Pago',
-      dia: 0,
     }])
 
     definirClientes(atual =>
@@ -112,9 +118,10 @@ export function PaginaAgendamento() {
 
             {etapaVisivel === HORARIO && (
               <EtapaHorario
-                dia={dia}
+                data={data}
                 horario={horario}
-                aoEscolherDia={escolherDia}
+                ocupados={ocupadosNoDia}
+                aoEscolherData={escolherData}
                 aoEscolherHorario={definirHorario}
                 aoVoltar={() => definirEtapa(SERVICO)}
                 aoAvancar={() => definirEtapa(DADOS)}

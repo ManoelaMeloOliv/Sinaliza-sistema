@@ -4,6 +4,7 @@ import {
   clientesIniciais,
   configuracoesIniciais,
   marcaInicial,
+  migrarAgendamentos,
   perfilInicial,
   servicosIniciais,
 } from '../dados/dadosIniciais'
@@ -12,7 +13,7 @@ import { ContextoAplicacao } from './contextoAplicacao'
 
 export function ProvedorAplicacao({ children }) {
   const [servicos, definirServicos] = useArmazenamentoLocal('sinaliza-servicos', servicosIniciais)
-  const [agendamentos, definirAgendamentos] = useArmazenamentoLocal('sinaliza-agendamentos', agendamentosIniciais)
+  const [agendamentos, definirAgendamentos] = useArmazenamentoLocal('sinaliza-agendamentos', agendamentosIniciais, migrarAgendamentos)
   const [clientes, definirClientes] = useArmazenamentoLocal('sinaliza-clientes', clientesIniciais)
   const [marca, definirMarca] = useArmazenamentoLocal('sinaliza-marca', marcaInicial)
   const [perfil, definirPerfil] = useArmazenamentoLocal('sinaliza-perfil', perfilInicial)

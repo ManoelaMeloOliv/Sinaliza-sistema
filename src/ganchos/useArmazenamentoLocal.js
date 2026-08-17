@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react'
 
 // O prefixo "use" e exigido pelo React (regras de hooks e React Compiler).
-export function useArmazenamentoLocal(chave, valorInicial) {
+//
+// "migrar" recebe o que estava salvo e devolve no formato atual. Serve para
+// quando o formato dos dados muda e ja existe coisa gravada no navegador.
+export function useArmazenamentoLocal(chave, valorInicial, migrar) {
   const [valor, definirValor] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(chave)) ?? valorInicial } catch { return valorInicial }
+    try {
+      const guardado = JSON.parse(localStorage.getItem(chave))
+      if (guardado === null || guardado === undefined) return valorInicial
+      return migrar ? migrar(guardado) : guardado
+    } catch { return valorInicial }
   })
 
   useEffect(() => { localStorage.setItem(chave, JSON.stringify(valor)) }, [chave, valor])
@@ -13,11 +20,14 @@ export function useArmazenamentoLocal(chave, valorInicial) {
   useEffect(() => {
     const aoMudarEmOutraAba = evento => {
       if (evento.key !== chave || evento.newValue === null) return
-      try { definirValor(JSON.parse(evento.newValue)) } catch { /* valor corrompido: mantem o atual */ }
+      try {
+        const recebido = JSON.parse(evento.newValue)
+        definirValor(migrar ? migrar(recebido) : recebido)
+      } catch { /* valor corrompido: mantem o atual */ }
     }
     window.addEventListener('storage', aoMudarEmOutraAba)
     return () => window.removeEventListener('storage', aoMudarEmOutraAba)
-  }, [chave])
+  }, [chave, migrar])
 
   return [valor, definirValor]
 }

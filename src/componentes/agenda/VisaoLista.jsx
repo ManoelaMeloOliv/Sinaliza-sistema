@@ -1,6 +1,12 @@
 import { Etiqueta } from '../interface/Etiqueta'
+import { dataCurta } from '../../utilitarios/datas'
 
 export function VisaoLista({ agendamentos, aoVerDetalhes }) {
+  // Da lista sim faz sentido ver tudo em ordem cronologica.
+  const ordenados = [...agendamentos].sort(
+    (a, b) => a.data.localeCompare(b.data) || a.horario.localeCompare(b.horario),
+  )
+
   return (
     <div className="agenda-list-view">
       <table className="table">
@@ -15,12 +21,12 @@ export function VisaoLista({ agendamentos, aoVerDetalhes }) {
           </tr>
         </thead>
         <tbody>
-          {agendamentos.length === 0 && (
+          {ordenados.length === 0 && (
             <tr><td colSpan="6" className="empty">Nenhum agendamento neste filtro.</td></tr>
           )}
-          {agendamentos.map(agendamento => (
+          {ordenados.map(agendamento => (
             <tr key={agendamento.id}>
-              <td>{19 + agendamento.dia} ago, 2026</td>
+              <td>{dataCurta(agendamento.data)}</td>
               <td><b>{agendamento.horario}</b></td>
               <td>{agendamento.cliente}</td>
               <td>{agendamento.servico}</td>

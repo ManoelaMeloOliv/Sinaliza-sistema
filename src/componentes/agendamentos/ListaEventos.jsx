@@ -1,7 +1,8 @@
 import { Etiqueta } from '../interface/Etiqueta'
+import { dataCurta } from '../../utilitarios/datas'
 
 // Lista compacta de horarios usada na Visao geral e na lateral da Agenda.
-export function ListaEventos({ agendamentos, mensagemVazia = 'Nenhum horário neste filtro.' }) {
+export function ListaEventos({ agendamentos, mostrarData = false, mensagemVazia = 'Nenhum horário neste filtro.' }) {
   if (!agendamentos.length) return <p className="empty">{mensagemVazia}</p>
 
   return (
@@ -12,7 +13,10 @@ export function ListaEventos({ agendamentos, mensagemVazia = 'Nenhum horário ne
           <i />
           <p>
             {agendamento.cliente}
-            <small>{agendamento.servico}</small>
+            <small>
+              {agendamento.servico}
+              {mostrarData && ` · ${dataCurta(agendamento.data)}`}
+            </small>
           </p>
           <Etiqueta situacao={agendamento.situacao} />
         </div>

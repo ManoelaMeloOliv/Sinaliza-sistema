@@ -5,7 +5,7 @@ import { CartaoIndicador } from '../../componentes/interface/CartaoIndicador'
 import { ListaEventos } from '../../componentes/agendamentos/ListaEventos'
 import { FormularioAgendamento } from '../../componentes/agendamentos/FormularioAgendamento'
 import { useAplicacao } from '../../ganchos/useAplicacao'
-import { dataPorExtenso } from '../../utilitarios/datas'
+import { dataDeHoje, dataPorExtenso } from '../../utilitarios/datas'
 import {
   ATIVIDADE_RECENTE,
   FATURAMENTO_SEMANAL,
@@ -19,6 +19,11 @@ export function PaginaInicial() {
   const irPara = useNavigate()
 
   const percentualOcupado = Math.round((OCUPACAO.ocupados / OCUPACAO.total) * 100)
+
+  const hoje = dataDeHoje()
+  const deHoje = agendamentos
+    .filter(item => item.data === hoje)
+    .sort((a, b) => a.horario.localeCompare(b.horario))
 
   return (
     <section className="page active">
@@ -57,7 +62,7 @@ export function PaginaInicial() {
             <h2>Agenda de hoje</h2>
             <button onClick={() => irPara('/painel/agenda')}>Ver agenda</button>
           </div>
-          <ListaEventos agendamentos={agendamentos.slice(0, 4)} mensagemVazia="Nenhum horário para hoje." />
+          <ListaEventos agendamentos={deHoje.slice(0, 4)} mensagemVazia="Nenhum horário para hoje." />
         </article>
       </div>
 

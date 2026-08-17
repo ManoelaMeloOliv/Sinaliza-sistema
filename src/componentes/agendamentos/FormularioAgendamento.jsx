@@ -3,23 +3,18 @@ import { Campo } from '../interface/Campo'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { formatarMoeda } from '../../utilitarios/formatadores'
 import { calcularSinal, regraDeSinal, rotuloDoSinal, servicoPorNome } from '../../utilitarios/valores'
+import { dataDeHoje } from '../../utilitarios/datas'
 
-// A agenda da demonstracao cobre terca (0) a sabado (4).
-function diaDaSemanaDaAgenda(valorDoCampoData) {
-  if (!valorDoCampoData) return 0
-  const indice = new Date(valorDoCampoData).getDay() - 2
-  return indice >= 0 && indice <= 4 ? indice : 0
-}
-
-export function FormularioAgendamento({ modo = 'agendamento', aoConcluir }) {
-  const { servicos, configuracoes, definirAgendamentos, definirClientes, mostrarAviso } = useAplicacao()
+export function FormularioAgendamento({ modo = 'agendamento', dataSugerida, aoConcluir }) {
+  const { servicos, agendamentos, configuracoes, definirAgendamentos, definirClientes, mostrarAviso } = useAplicacao()
   const bloqueio = modo === 'bloqueio'
 
   const [formulario, definirFormulario] = useState({
     cliente: bloqueio ? 'Horário bloqueado' : '',
     telefone: '',
     servico: servicos[0]?.nome ?? '',
-    data: '',
+    data: dataSugerida ?? dataDeHoje(),
+    horario: '09:00',
     preco: servicos[0]?.preco ?? 0,
     situacao: bloqueio ? 'Não cobrar' : 'Pago',
     observacoes: '',
@@ -39,21 +34,28 @@ export function FormularioAgendamento({ modo = 'agendamento', aoConcluir }) {
   const regra = regraDeSinal(servicoPorNome(servicos, formulario.servico), configuracoes)
   const sinal = formulario.situacao === 'Não cobrar' ? 0 : calcularSinal(valor, regra)
 
+  // Ja existe alguem neste dia e horario?
+  const ocupado = agendamentos.some(
+    item => item.data === formulario.data && item.horario === formulario.horario,
+  )
+
   const enviar = evento => {
     evento.preventDefault()
-    const horario = formulario.data
-      ? new Date(formulario.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-      : '09:00'
+
+    if (ocupado) {
+      mostrarAviso('Já existe um agendamento nesse dia e horário.')
+      return
+    }
 
     definirAgendamentos(atual => [
       ...atual,
       {
         id: crypto.randomUUID(),
-        horario,
+        data: formulario.data,
+        horario: formulario.horario,
         cliente: formulario.cliente,
         servico: bloqueio ? 'Bloqueio' : formulario.servico,
         situacao: formulario.situacao,
-        dia: diaDaSemanaDaAgenda(formulario.data),
         observacoes: formulario.observacoes,
       },
     ])
@@ -114,8 +116,11 @@ export function FormularioAgendamento({ modo = 'agendamento', aoConcluir }) {
                   {servicos.map(servico => <option key={servico.id}>{servico.nome}</option>)}
                 </select>
               </Campo>
-              <Campo rotulo="Data e horário">
-                <input required type="datetime-local" value={formulario.data} onChange={atualizar('data')} />
+              <Campo rotulo="Data">
+                <input required type="date" value={formulario.data} onChange={atualizar('data')} />
+              </Campo>
+              <Campo rotulo="Horário">
+                <input required type="time" value={formulario.horario} onChange={atualizar('horario')} />
               </Campo>
               <Campo rotulo="Valor do serviço">
                 <input type="number" min="0" step="1" value={formulario.preco} onChange={atualizar('preco')} />

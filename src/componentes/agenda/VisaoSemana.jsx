@@ -1,27 +1,32 @@
-import { DIAS_DA_SEMANA, HORARIOS_DA_GRADE } from '../../dados/dadosPainel'
+import { HORARIOS_DA_GRADE } from '../../dados/dadosPainel'
+import { dataDeHoje, rotuloDoDia } from '../../utilitarios/datas'
 
 // Grade de horarios x dias. Cada celula mostra o agendamento daquele cruzamento.
-export function VisaoSemana({ agendamentos }) {
+export function VisaoSemana({ dias, agendamentos }) {
+  const hoje = dataDeHoje()
+
   return (
     <div className="week">
       <div />
-      {DIAS_DA_SEMANA.map(dia => <div className="day" key={dia}>{dia}</div>)}
+      {dias.map(dia => (
+        <div className={dia === hoje ? 'day hoje' : 'day'} key={dia}>{rotuloDoDia(dia)}</div>
+      ))}
 
       {HORARIOS_DA_GRADE.map(horario => (
-        <Linha key={horario} horario={horario} agendamentos={agendamentos} />
+        <Linha key={horario} horario={horario} dias={dias} agendamentos={agendamentos} />
       ))}
     </div>
   )
 }
 
-function Linha({ horario, agendamentos }) {
+function Linha({ horario, dias, agendamentos }) {
   return (
     <>
       <div className="hour">{horario}</div>
-      {DIAS_DA_SEMANA.map((_, indiceDoDia) => {
-        const agendamento = agendamentos.find(item => item.dia === indiceDoDia && item.horario === horario)
+      {dias.map(dia => {
+        const agendamento = agendamentos.find(item => item.data === dia && item.horario === horario)
         return (
-          <div key={indiceDoDia}>
+          <div key={dia}>
             {agendamento && (
               <div className={agendamento.situacao === 'Pago' ? 'booking green' : 'booking'}>
                 <b>{agendamento.cliente}</b>

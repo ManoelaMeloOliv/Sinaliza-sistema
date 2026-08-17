@@ -1280,3 +1280,18 @@
 .mobile-menu {
   display: grid;
 }
+
+/* Destaque do dia atual na grade semanal da agenda. */
+.week .day.hoje {
+  color: var(--p);
+}
+
+.week .day.hoje:after {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 5px auto 0;
+  border-radius: 2px;
+  background: var(--p);
+}

@@ -7,7 +7,15 @@ import { VisaoSemana } from '../../componentes/agenda/VisaoSemana'
 import { VisaoMes } from '../../componentes/agenda/VisaoMes'
 import { VisaoLista } from '../../componentes/agenda/VisaoLista'
 import { useAplicacao } from '../../ganchos/useAplicacao'
-import { RESUMO_DA_AGENDA, ROTULO_DA_SEMANA } from '../../dados/dadosPainel'
+import {
+  dataCurta,
+  dataDeHoje,
+  mesPorExtenso,
+  rotuloDaSemana,
+  semanaDeTrabalho,
+  somarDias,
+  somarMeses,
+} from '../../utilitarios/datas'
 
 const VISOES = ['Dia', 'Semana', 'Mês', 'Lista']
 const LIMITE_INICIAL = 5
@@ -16,24 +24,48 @@ export function PaginaAgenda() {
   const { agendamentos, mostrarAviso } = useAplicacao()
   const [visao, definirVisao] = useState('Semana')
   const [situacao, definirSituacao] = useState('')
-  const [semana, definirSemana] = useState(0)
+  const [referencia, definirReferencia] = useState(dataDeHoje())
   const [limite, definirLimite] = useState(LIMITE_INICIAL)
   const [modal, definirModal] = useState(null) // 'agendamento' | 'bloqueio' | null
 
-  const visiveis = agendamentos.filter(item => !situacao || item.situacao === situacao)
+  const dias = semanaDeTrabalho(referencia)
+  const hoje = dataDeHoje()
 
-  const mudarSemana = passo => {
-    const proxima = passo === 0 ? 0 : semana + passo
-    definirSemana(proxima)
-    mostrarAviso(
-      proxima === 0
-        ? 'Mostrando a semana atual.'
-        : `Semana ${proxima > 0 ? '+' : ''}${proxima} em relação à atual.`,
-    )
+  const porSituacao = agendamentos.filter(item => !situacao || item.situacao === situacao)
+
+  // Cada visao mostra um recorte diferente do tempo.
+  const doPeriodo = {
+    Dia: porSituacao.filter(item => item.data === referencia),
+    Semana: porSituacao.filter(item => dias.includes(item.data)),
+    Mês: porSituacao.filter(item => item.data.slice(0, 7) === referencia.slice(0, 7)),
+    Lista: porSituacao,
+  }[visao]
+
+  // Na lateral ficam sempre os proximos horarios, independente do periodo exibido.
+  const proximos = porSituacao
+    .filter(item => item.data >= hoje)
+    .sort((a, b) => a.data.localeCompare(b.data) || a.horario.localeCompare(b.horario))
+
+  const navegar = passo => {
+    if (passo === 0) {
+      definirReferencia(hoje)
+      mostrarAviso('Voltando para hoje.')
+      return
+    }
+    if (visao === 'Mês') definirReferencia(somarMeses(referencia, passo))
+    else if (visao === 'Dia') definirReferencia(somarDias(referencia, passo))
+    else definirReferencia(somarDias(referencia, passo * 7))
   }
 
+  const periodo = {
+    Dia: dataCurta(referencia),
+    Semana: rotuloDaSemana(dias),
+    Mês: mesPorExtenso(referencia),
+    Lista: `${agendamentos.length} no total`,
+  }[visao]
+
   const verDetalhes = agendamento =>
-    mostrarAviso(`${agendamento.cliente} · ${agendamento.servico} às ${agendamento.horario} (${agendamento.situacao}).`)
+    mostrarAviso(`${agendamento.cliente} · ${agendamento.servico} em ${dataCurta(agendamento.data)} às ${agendamento.horario}.`)
 
   return (
     <section className="page active">
@@ -45,20 +77,30 @@ export function PaginaAgenda() {
       />
 
       <div className="agenda-summary">
-        {RESUMO_DA_AGENDA.map(item => (
-          <div className="agenda-kpi" key={item.rotulo}>
-            <span>{item.rotulo}</span>
-            <b>{item.valor}</b>
-          </div>
-        ))}
+        <div className="agenda-kpi">
+          <span>Agendamentos na semana</span>
+          <b>{agendamentos.filter(item => dias.includes(item.data)).length}</b>
+        </div>
+        <div className="agenda-kpi">
+          <span>Confirmados</span>
+          <b>{agendamentos.filter(item => dias.includes(item.data) && item.situacao === 'Pago').length}</b>
+        </div>
+        <div className="agenda-kpi">
+          <span>Aguardando sinal</span>
+          <b>{agendamentos.filter(item => dias.includes(item.data) && item.situacao === 'Aguardando').length}</b>
+        </div>
+        <div className="agenda-kpi">
+          <span>Próximos horários</span>
+          <b>{proximos.length}</b>
+        </div>
       </div>
 
       <div className="card toolbar">
         <div className="toolbar-left">
-          <button className="small-btn" onClick={() => mudarSemana(-1)} aria-label="Semana anterior">‹</button>
-          <button className="small-btn" onClick={() => mudarSemana(0)}>Hoje</button>
-          <button className="small-btn" onClick={() => mudarSemana(1)} aria-label="Próxima semana">›</button>
-          <b style={{ fontSize: 12 }}>{ROTULO_DA_SEMANA}</b>
+          <button className="small-btn" onClick={() => navegar(-1)} aria-label="Período anterior">‹</button>
+          <button className="small-btn" onClick={() => navegar(0)}>Hoje</button>
+          <button className="small-btn" onClick={() => navegar(1)} aria-label="Próximo período">›</button>
+          <b style={{ fontSize: 12 }}>{periodo}</b>
         </div>
 
         <div className="toolbar-right">
@@ -84,10 +126,10 @@ export function PaginaAgenda() {
 
       <div className="calendar-layout">
         <article className="card table-wrap">
-          {visao === 'Dia' && <VisaoDia agendamentos={visiveis} />}
-          {visao === 'Semana' && <VisaoSemana agendamentos={visiveis} />}
-          {visao === 'Mês' && <VisaoMes agendamentos={visiveis} aoAbrirAgendamento={verDetalhes} />}
-          {visao === 'Lista' && <VisaoLista agendamentos={visiveis} aoVerDetalhes={verDetalhes} />}
+          {visao === 'Dia' && <VisaoDia dia={referencia} agendamentos={doPeriodo} />}
+          {visao === 'Semana' && <VisaoSemana dias={dias} agendamentos={doPeriodo} />}
+          {visao === 'Mês' && <VisaoMes mes={referencia} agendamentos={doPeriodo} aoAbrirAgendamento={verDetalhes} />}
+          {visao === 'Lista' && <VisaoLista agendamentos={doPeriodo} aoVerDetalhes={verDetalhes} />}
         </article>
 
         <aside className="card">
@@ -98,7 +140,7 @@ export function PaginaAgenda() {
             </button>
           </div>
 
-          <ListaEventos agendamentos={visiveis.slice(0, limite)} />
+          <ListaEventos agendamentos={proximos.slice(0, limite)} mostrarData />
 
           <button
             className="btn secondary"
@@ -110,7 +152,7 @@ export function PaginaAgenda() {
         </aside>
       </div>
 
-      {modal && <FormularioAgendamento modo={modal} aoConcluir={() => definirModal(null)} />}
+      {modal && <FormularioAgendamento modo={modal} dataSugerida={referencia} aoConcluir={() => definirModal(null)} />}
     </section>
   )
 }
