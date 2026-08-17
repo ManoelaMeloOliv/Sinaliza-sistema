@@ -1158,3 +1158,10 @@
   height: 34px;
   stroke-width: 2.4;
 }
+
+/* O visto das etapas ja concluidas cabe no circulo de 25px. */
+.pagina-publica .step i .ui-icon {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.6;
+}
