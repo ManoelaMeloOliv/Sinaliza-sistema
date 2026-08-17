@@ -36,7 +36,7 @@ export function PaginaServicos() {
       alterar(modal.servico.id, dados)
       mostrarAviso('Serviço atualizado.')
     } else {
-      definirServicos(atual => [...atual, { ...dados, id: crypto.randomUUID(), icone: '✦' }])
+      definirServicos(atual => [...atual, { ...dados, id: crypto.randomUUID(), icone: 'estrela' }])
       mostrarAviso('Serviço adicionado ao catálogo.')
     }
     definirModal(null)

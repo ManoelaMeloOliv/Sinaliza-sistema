@@ -1,4 +1,5 @@
 import { formatarMoeda } from '../../utilitarios/formatadores'
+import { Icone } from '../interface/Icones'
 
 export function EtapaServico({ servicos, servicoEscolhido, aoEscolher, aoAvancar }) {
   return (
@@ -13,7 +14,7 @@ export function EtapaServico({ servicos, servicoEscolhido, aoEscolher, aoAvancar
             key={servico.id}
             onClick={() => aoEscolher(servico)}
           >
-            <span className="service-icon">{servico.icone}</span>
+            <span className="service-icon"><Icone nome={servico.icone} className="ui-icon" /></span>
             <span>
               <h3>{servico.nome}</h3>
               <small>{servico.duracao}</small>

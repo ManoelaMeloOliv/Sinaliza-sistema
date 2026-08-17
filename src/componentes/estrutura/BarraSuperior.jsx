@@ -47,8 +47,8 @@ export function BarraSuperior({ tema, aoAlternarTema, aoAlternarMenu, menuExpand
         <Link className="btn secondary" to="/agendamento" style={{ textDecoration: 'none', padding: '9px 12px' }}>
           Ver página pública
         </Link>
-        <button className="icon-btn" onClick={aoAlternarTema} title="Alternar tema">
-          {tema === 'dark' ? '☀' : '☾'}
+        <button className="icon-btn" onClick={aoAlternarTema} title="Alternar tema" aria-label="Alternar tema">
+          <Icone nome={tema === 'dark' ? 'sol' : 'lua'} className="" />
         </button>
         <button
           className="icon-btn"

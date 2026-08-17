@@ -6,10 +6,10 @@ import { dataDeHoje, semanaDeTrabalho } from '../utilitarios/datas'
 const SEMANA = semanaDeTrabalho(dataDeHoje())
 
 export const servicosIniciais = [
-  { id: 's1', nome: 'Volume russo', duracao: '2h', preco: 180, publicado: true, icone: '✦' },
-  { id: 's2', nome: 'Manutenção', duracao: '1h30', preco: 120, publicado: true, icone: '↻' },
-  { id: 's3', nome: 'Fio a fio', duracao: '1h45', preco: 150, publicado: true, icone: '✧' },
-  { id: 's4', nome: 'Remoção', duracao: '40min', preco: 45, publicado: true, icone: '×' },
+  { id: 's1', nome: 'Volume russo', duracao: '2h', preco: 180, publicado: true, icone: 'estrela' },
+  { id: 's2', nome: 'Manutenção', duracao: '1h30', preco: 120, publicado: true, icone: 'recarregar' },
+  { id: 's3', nome: 'Fio a fio', duracao: '1h45', preco: 150, publicado: true, icone: 'brilho' },
+  { id: 's4', nome: 'Remoção', duracao: '40min', preco: 45, publicado: true, icone: 'xis' },
 ]
 
 export const agendamentosIniciais = [

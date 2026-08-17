@@ -433,3 +433,20 @@
   font-weight: 700;
   margin: 8px 0;
 }
+
+/* Os icones passaram de simbolo de texto para SVG. O tracado e o mesmo do menu;
+   aqui fica so o tamanho dentro de cada caixa. */
+.stat-icon svg,
+.activity-dot svg,
+.icon-btn svg,
+.check svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+.stat-icon svg { width: 19px; height: 19px; }
+.activity-dot svg { width: 15px; height: 15px; }

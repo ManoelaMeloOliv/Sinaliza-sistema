@@ -1,9 +1,10 @@
 import { formatarMoeda } from '../../utilitarios/formatadores'
+import { Icone } from '../interface/Icones'
 
 export function EtapaConfirmacao({ servico, sinal, quando, nome, nomeDaLoja }) {
   return (
     <div className="screen confirm active">
-      <div className="check">✓</div>
+      <div className="check"><Icone nome="check" className="ui-icon" /></div>
       <h2>Seu horário está confirmado!</h2>
       <p className="intro">
         Prontinho, {nome}. O {nomeDaLoja} já recebeu sua reserva.

@@ -1151,3 +1151,10 @@
     grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
   }
 }
+
+/* O visto da confirmacao fica num circulo de 70px, entao precisa de porte maior. */
+.pagina-publica .check .ui-icon {
+  width: 34px;
+  height: 34px;
+  stroke-width: 2.4;
+}

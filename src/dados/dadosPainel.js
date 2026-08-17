@@ -19,9 +19,9 @@ export const SERVICOS_MAIS_AGENDADOS = [
 ]
 
 export const ATIVIDADE_RECENTE = [
-  { icone: '✓', titulo: 'Pix de Ana confirmado', detalhe: 'R$ 54,00 · há 12 minutos' },
-  { icone: '↗', titulo: 'Repasse enviado', detalhe: 'R$ 216,00 · hoje às 09:00' },
-  { icone: '+', titulo: 'Novo agendamento', detalhe: 'Marina Lima · há 1 hora' },
+  { icone: 'check', titulo: 'Pix de Ana confirmado', detalhe: 'R$ 54,00 · há 12 minutos' },
+  { icone: 'repasse', titulo: 'Repasse enviado', detalhe: 'R$ 216,00 · hoje às 09:00' },
+  { icone: 'mais', titulo: 'Novo agendamento', detalhe: 'Marina Lima · há 1 hora' },
 ]
 
 export const OCUPACAO = {

@@ -1,4 +1,5 @@
 import { formatarMoeda } from '../../utilitarios/formatadores'
+import { Icone } from '../interface/Icones'
 
 export function EtapaRevisao({ servico, sinal, rotuloSinal, quando, profissional, nomeDaLoja, mostrarPoliticas, aoVoltar, aoAvancar }) {
   return (
@@ -15,7 +16,7 @@ export function EtapaRevisao({ servico, sinal, rotuloSinal, quando, profissional
 
       <div className="pix">
         <div className="pix-top">
-          <div className="pix-icon">◇</div>
+          <div className="pix-icon"><Icone nome="pix" className="ui-icon" /></div>
           <div>
             <h3>Sinal via Pix</h3>
             <p>Confirmação automática assim que o pagamento cair.</p>

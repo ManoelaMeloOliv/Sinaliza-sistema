@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CabecalhoPagina } from '../../componentes/interface/CabecalhoPagina'
 import { CartaoIndicador } from '../../componentes/interface/CartaoIndicador'
+import { Icone } from '../../componentes/interface/Icones'
 import { ListaEventos } from '../../componentes/agendamentos/ListaEventos'
 import { FormularioAgendamento } from '../../componentes/agendamentos/FormularioAgendamento'
 import { useAplicacao } from '../../ganchos/useAplicacao'
@@ -35,10 +36,10 @@ export function PaginaInicial() {
       />
 
       <div className="stats">
-        <CartaoIndicador rotulo="Faturamento no mês" icone="$" valor="R$ 4.860" tendencia="↑ 18% comparado a julho" />
-        <CartaoIndicador rotulo="Agendamentos" icone="▣" valor={34 + agendamentos.length} tendencia="↑ 6 novos esta semana" />
-        <CartaoIndicador rotulo="Sinais recebidos" icone="✓" valor="R$ 1.458" tendencia="100% repassados" />
-        <CartaoIndicador rotulo="Faltas evitadas" icone="♢" valor="R$ 720" tendencia="6 horários protegidos" />
+        <CartaoIndicador rotulo="Faturamento no mês" icone="dinheiro" valor="R$ 4.860" tendencia="↑ 18% comparado a julho" />
+        <CartaoIndicador rotulo="Agendamentos" icone="agendamentos" valor={34 + agendamentos.length} tendencia="↑ 6 novos esta semana" />
+        <CartaoIndicador rotulo="Sinais recebidos" icone="recebido" valor="R$ 1.458" tendencia="100% repassados" />
+        <CartaoIndicador rotulo="Faltas evitadas" icone="escudo" valor="R$ 720" tendencia="6 horários protegidos" />
       </div>
 
       <div className="grid-2">
@@ -103,7 +104,7 @@ export function PaginaInicial() {
           <div className="activity">
             {ATIVIDADE_RECENTE.map(item => (
               <div className="activity-item" key={item.titulo}>
-                <i className="activity-dot">{item.icone}</i>
+                <i className="activity-dot"><Icone nome={item.icone} className="" /></i>
                 <p>
                   <b>{item.titulo}</b>
                   <small>{item.detalhe}</small>

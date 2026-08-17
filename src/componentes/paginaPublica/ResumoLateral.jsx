@@ -1,4 +1,5 @@
 import { formatarMoeda, iniciais } from '../../utilitarios/formatadores'
+import { Icone } from '../interface/Icones'
 
 const POLITICAS = [
   'Seu horário é confirmado automaticamente após o Pix.',
@@ -30,7 +31,7 @@ export function ResumoLateral({ marca, servico, quando, sinal, rotuloSinal }) {
         ) : (
           <div>
             <div className="summary-service">
-              <i>{servico.icone}</i>
+              <i><Icone nome={servico.icone} className="ui-icon" /></i>
               <div>
                 <b>{servico.nome}</b>
                 <small>{servico.duracao} · {marca.nome}</small>
