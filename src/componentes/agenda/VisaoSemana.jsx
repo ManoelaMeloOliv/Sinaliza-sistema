@@ -2,7 +2,7 @@ import { HORARIOS_DA_GRADE } from '../../dados/dadosPainel'
 import { dataDeHoje, rotuloDoDia } from '../../utilitarios/datas'
 
 // Grade de horarios x dias. Cada celula mostra o agendamento daquele cruzamento.
-export function VisaoSemana({ dias, agendamentos }) {
+export function VisaoSemana({ dias, agendamentos, aoSelecionar }) {
   const hoje = dataDeHoje()
 
   return (
@@ -13,13 +13,13 @@ export function VisaoSemana({ dias, agendamentos }) {
       ))}
 
       {HORARIOS_DA_GRADE.map(horario => (
-        <Linha key={horario} horario={horario} dias={dias} agendamentos={agendamentos} />
+        <Linha key={horario} horario={horario} dias={dias} agendamentos={agendamentos} aoSelecionar={aoSelecionar} />
       ))}
     </div>
   )
 }
 
-function Linha({ horario, dias, agendamentos }) {
+function Linha({ horario, dias, agendamentos, aoSelecionar }) {
   return (
     <>
       <div className="hour">{horario}</div>
@@ -28,11 +28,11 @@ function Linha({ horario, dias, agendamentos }) {
         return (
           <div key={dia}>
             {agendamento && (
-              <div className={agendamento.situacao === 'Pago' ? 'booking green' : 'booking'}>
+              <button type="button" className={agendamento.situacao === 'Pago' ? 'booking green' : 'booking'} onClick={() => aoSelecionar(agendamento)}>
                 <b>{agendamento.cliente}</b>
                 <br />
                 {agendamento.servico}
-              </div>
+              </button>
             )}
           </div>
         )

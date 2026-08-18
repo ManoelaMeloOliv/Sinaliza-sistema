@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { formatarMoeda } from '../../utilitarios/formatadores'
 
 const CHAVE_PIX = '00020126580014BR.GOV.BCB.PIX0136sinaliza-demo-studiodaju'
-const SEGUNDOS = 900 // 15 minutos
 
 function relogio(restante) {
   const minutos = String(Math.floor(restante / 60)).padStart(2, '0')
@@ -10,8 +9,9 @@ function relogio(restante) {
   return `${minutos}:${segundos}`
 }
 
-export function EtapaPix({ sinal, aoConfirmar }) {
-  const [restante, definirRestante] = useState(SEGUNDOS)
+// "minutosDeValidade" vem de Configuracoes > Pagamentos.
+export function EtapaPix({ sinal, minutosDeValidade = 15, aoConfirmar }) {
+  const [restante, definirRestante] = useState(minutosDeValidade * 60)
   const [copiado, definirCopiado] = useState(false)
 
   useEffect(() => {

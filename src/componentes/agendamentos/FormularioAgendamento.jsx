@@ -4,80 +4,144 @@ import { useAplicacao } from '../../ganchos/useAplicacao'
 import { formatarMoeda } from '../../utilitarios/formatadores'
 import { calcularSinal, regraDeSinal, rotuloDoSinal, servicoPorNome } from '../../utilitarios/valores'
 import { dataDeHoje } from '../../utilitarios/datas'
+import { existeConflito, horariosDisponiveis } from '../../utilitarios/regras'
 
-export function FormularioAgendamento({ modo = 'agendamento', dataSugerida, aoConcluir }) {
+function limiteDeRemarcacoes(texto) {
+  if (/nenhuma/i.test(texto ?? '')) return 0
+  return Number(String(texto ?? '').match(/\d+/)?.[0] ?? 1)
+}
+
+export function FormularioAgendamento({ modo = 'agendamento', agendamento, dataSugerida, aoConcluir }) {
   const { servicos, agendamentos, configuracoes, definirAgendamentos, definirClientes, mostrarAviso } = useAplicacao()
-  const bloqueio = modo === 'bloqueio'
+
+  const editando = Boolean(agendamento)
+  const bloqueio = modo === 'bloqueio' || agendamento?.servico === 'Bloqueio'
 
   const [formulario, definirFormulario] = useState({
-    cliente: bloqueio ? 'Horário bloqueado' : '',
-    telefone: '',
-    servico: servicos[0]?.nome ?? '',
-    data: dataSugerida ?? dataDeHoje(),
-    horario: '09:00',
-    preco: servicos[0]?.preco ?? 0,
-    situacao: bloqueio ? 'Não cobrar' : 'Pago',
-    observacoes: '',
+    cliente: agendamento?.cliente ?? (bloqueio ? 'Horário bloqueado' : ''),
+    telefone: agendamento?.telefone ?? '',
+    servico: agendamento?.servico ?? servicos[0]?.nome ?? '',
+    data: agendamento?.data ?? dataSugerida ?? dataDeHoje(),
+    horario: agendamento?.horario ?? '09:00',
+    preco: agendamento?.preco ?? servicos[0]?.preco ?? 0,
+    situacao: agendamento?.situacao ?? (bloqueio ? 'Não cobrar' : 'Pago'),
+    observacoes: agendamento?.observacoes ?? '',
   })
+
+  const [confirmandoExclusao, definirConfirmandoExclusao] = useState(false)
 
   const atualizar = campo => evento =>
     definirFormulario(atual => ({ ...atual, [campo]: evento.target.value }))
 
-  // Trocar o servico ja traz o preco dele, como na versao anterior.
   const trocarServico = evento => {
     const nome = evento.target.value
     const servico = servicos.find(item => item.nome === nome)
     definirFormulario(atual => ({ ...atual, servico: nome, preco: servico ? servico.preco : atual.preco }))
   }
 
+  const servicoEscolhido = servicoPorNome(servicos, formulario.servico)
   const valor = Number(formulario.preco) || 0
-  const regra = regraDeSinal(servicoPorNome(servicos, formulario.servico), configuracoes)
+  const regra = regraDeSinal(servicoEscolhido, configuracoes)
   const sinal = formulario.situacao === 'Não cobrar' ? 0 : calcularSinal(valor, regra)
 
-  // Ja existe alguem neste dia e horario?
-  const ocupado = agendamentos.some(
-    item => item.data === formulario.data && item.horario === formulario.horario,
-  )
+  // Sugere os horarios que realmente cabem, mas sem impedir um encaixe manual.
+  const sugestoes = horariosDisponiveis({
+    data: formulario.data,
+    servico: servicoEscolhido,
+    agendamentos,
+    servicos,
+    configuracoes,
+    ignorarId: agendamento?.id,
+  })
+
+  const mudouOHorario =
+    editando && (agendamento.data !== formulario.data || agendamento.horario !== formulario.horario)
+
+  const remarcacoesFeitas = agendamento?.remarcacoes ?? 0
+  const limite = limiteDeRemarcacoes(configuracoes.remarcacoesPermitidas)
 
   const enviar = evento => {
     evento.preventDefault()
 
-    if (ocupado) {
-      mostrarAviso('Já existe um agendamento nesse dia e horário.')
+    if (mudouOHorario && remarcacoesFeitas >= limite) {
+      mostrarAviso(
+        limite === 0
+          ? 'As configurações não permitem remarcação.'
+          : `Este agendamento já usou as ${limite} remarcação(ões) permitidas.`,
+      )
       return
     }
 
-    definirAgendamentos(atual => [
-      ...atual,
-      {
-        id: crypto.randomUUID(),
-        data: formulario.data,
-        horario: formulario.horario,
-        cliente: formulario.cliente,
-        servico: bloqueio ? 'Bloqueio' : formulario.servico,
-        situacao: formulario.situacao,
-        observacoes: formulario.observacoes,
-      },
-    ])
+    const conflito = existeConflito({
+      data: formulario.data,
+      horario: formulario.horario,
+      servico: servicoEscolhido,
+      agendamentos,
+      servicos,
+      configuracoes,
+      ignorarId: agendamento?.id,
+    })
 
-    if (!bloqueio && formulario.telefone) {
-      definirClientes(atual =>
-        atual.some(cliente => cliente.telefone === formulario.telefone)
-          ? atual
-          : [...atual, {
-              id: crypto.randomUUID(),
-              nome: formulario.cliente,
-              telefone: formulario.telefone,
-              ultimoServico: formulario.servico,
-              agendamentos: 1,
-              situacao: 'Ativa',
-            }],
-      )
+    if (conflito) {
+      mostrarAviso('Esse horário conflita com outro atendimento.')
+      return
     }
 
-    mostrarAviso(bloqueio ? 'Horário bloqueado na agenda.' : 'Agendamento criado com sucesso.')
+    const dados = {
+      data: formulario.data,
+      horario: formulario.horario,
+      cliente: formulario.cliente,
+      telefone: formulario.telefone,
+      servico: bloqueio ? 'Bloqueio' : formulario.servico,
+      situacao: formulario.situacao,
+      observacoes: formulario.observacoes,
+    }
+
+    if (editando) {
+      definirAgendamentos(atual =>
+        atual.map(item =>
+          item.id === agendamento.id
+            ? { ...item, ...dados, remarcacoes: remarcacoesFeitas + (mudouOHorario ? 1 : 0) }
+            : item,
+        ),
+      )
+      mostrarAviso(mudouOHorario ? 'Agendamento remarcado.' : 'Agendamento atualizado.')
+    } else {
+      definirAgendamentos(atual => [...atual, { ...dados, id: crypto.randomUUID(), remarcacoes: 0 }])
+
+      if (!bloqueio && formulario.telefone) {
+        definirClientes(atual =>
+          atual.some(cliente => cliente.telefone === formulario.telefone)
+            ? atual.map(cliente =>
+                cliente.telefone === formulario.telefone
+                  ? { ...cliente, agendamentos: (cliente.agendamentos ?? 0) + 1, ultimoServico: formulario.servico }
+                  : cliente,
+              )
+            : [...atual, {
+                id: crypto.randomUUID(),
+                nome: formulario.cliente,
+                telefone: formulario.telefone,
+                ultimoServico: formulario.servico,
+                agendamentos: 1,
+                situacao: 'Ativa',
+              }],
+        )
+      }
+      mostrarAviso(bloqueio ? 'Horário bloqueado na agenda.' : 'Agendamento criado com sucesso.')
+    }
+
     aoConcluir()
   }
+
+  const excluir = () => {
+    definirAgendamentos(atual => atual.filter(item => item.id !== agendamento.id))
+    mostrarAviso(bloqueio ? 'Bloqueio removido.' : `Agendamento de ${agendamento.cliente} cancelado.`)
+    aoConcluir()
+  }
+
+  const titulo = editando
+    ? (bloqueio ? 'Editar bloqueio' : 'Editar agendamento')
+    : (bloqueio ? 'Bloquear horário' : 'Novo agendamento')
 
   return (
     <div className="modal open" role="presentation" onMouseDown={e => e.target === e.currentTarget && aoConcluir()}>
@@ -85,11 +149,13 @@ export function FormularioAgendamento({ modo = 'agendamento', dataSugerida, aoCo
         <div className="booking-modal-head">
           <div>
             <span className="eyebrow">Agenda</span>
-            <h2>{bloqueio ? 'Bloquear horário' : 'Novo agendamento'}</h2>
+            <h2>{titulo}</h2>
             <p>
-              {bloqueio
-                ? 'Reserve um horário para que ninguém possa agendar nele.'
-                : 'Cadastre manualmente um horário e defina a situação do sinal.'}
+              {editando
+                ? 'Altere os dados, remarque ou cancele este horário.'
+                : bloqueio
+                  ? 'Reserve um horário para que ninguém possa agendar nele.'
+                  : 'Cadastre manualmente um horário e defina a situação do sinal.'}
             </p>
           </div>
           <button type="button" className="modal-head-close" onClick={aoConcluir} aria-label="Fechar">×</button>
@@ -120,7 +186,10 @@ export function FormularioAgendamento({ modo = 'agendamento', dataSugerida, aoCo
                 <input required type="date" value={formulario.data} onChange={atualizar('data')} />
               </Campo>
               <Campo rotulo="Horário">
-                <input required type="time" value={formulario.horario} onChange={atualizar('horario')} />
+                <input required type="time" list="horarios-livres" value={formulario.horario} onChange={atualizar('horario')} />
+                <datalist id="horarios-livres">
+                  {sugestoes.map(hora => <option key={hora} value={hora} />)}
+                </datalist>
               </Campo>
               <Campo rotulo="Valor do serviço">
                 <input type="number" min="0" step="1" value={formulario.preco} onChange={atualizar('preco')} />
@@ -142,14 +211,46 @@ export function FormularioAgendamento({ modo = 'agendamento', dataSugerida, aoCo
               <div><span>{rotuloDoSinal(regra)}</span><b>{formatarMoeda(sinal)}</b></div>
               <div><span>Restante no atendimento</span><b>{formatarMoeda(valor - sinal)}</b></div>
             </div>
+
+            {sugestoes.length === 0 && (
+              <p className="section-help" style={{ marginTop: 14 }}>
+                Não há horário livre nesse dia para este serviço. Você ainda pode salvar, mas confira a agenda.
+              </p>
+            )}
           </section>
         </div>
 
         <div className="booking-modal-footer">
-          <p>A cliente receberá a confirmação e os lembretes configurados.</p>
+          {editando ? (
+            confirmandoExclusao ? (
+              <p><b>Cancelar mesmo este horário?</b></p>
+            ) : (
+              <p>
+                {remarcacoesFeitas > 0 && `${remarcacoesFeitas} remarcação(ões) usada(s) de ${limite}. `}
+                A cliente será avisada da alteração.
+              </p>
+            )
+          ) : (
+            <p>A cliente receberá a confirmação e os lembretes configurados.</p>
+          )}
+
           <div className="modal-actions">
-            <button type="button" className="btn secondary" onClick={aoConcluir}>Cancelar</button>
-            <button className="btn">{bloqueio ? 'Bloquear horário' : 'Criar agendamento'}</button>
+            {editando && !confirmandoExclusao && (
+              <button type="button" className="btn secondary" onClick={() => definirConfirmandoExclusao(true)}>
+                Cancelar horário
+              </button>
+            )}
+            {confirmandoExclusao ? (
+              <>
+                <button type="button" className="btn secondary" onClick={() => definirConfirmandoExclusao(false)}>Voltar</button>
+                <button type="button" className="btn" onClick={excluir}>Confirmar cancelamento</button>
+              </>
+            ) : (
+              <>
+                <button type="button" className="btn secondary" onClick={aoConcluir}>Fechar</button>
+                <button className="btn">{editando ? 'Salvar alterações' : bloqueio ? 'Bloquear horário' : 'Criar agendamento'}</button>
+              </>
+            )}
           </div>
         </div>
       </form>

@@ -3,25 +3,18 @@ import {
   DIAS_DA_SEMANA_CURTOS,
   dataDeHoje,
   dataPorExtenso,
-  ehDiaDeAtendimento,
   gradeDoMes,
   mesPorExtenso,
   paraData,
   somarMeses,
 } from '../../utilitarios/datas'
 
-const HORARIOS_DISPONIVEIS = ['09:00', '10:30', '14:00', '16:30', '18:00']
-
-export function EtapaHorario({ data, horario, ocupados, aoEscolherData, aoEscolherHorario, aoVoltar, aoAvancar }) {
+export function EtapaHorario({ data, horario, horarios, podeEscolher, aoEscolherData, aoEscolherHorario, aoVoltar, aoAvancar }) {
   const hoje = dataDeHoje()
   const [mes, definirMes] = useState(data ?? hoje)
 
   const casas = gradeDoMes(mes)
-  const primeiroDoMes = `${mes.slice(0, 7)}-01`
-  const podeVoltar = primeiroDoMes > hoje.slice(0, 7) + '-01'
-
-  // So oferece o que ainda nao foi reservado naquele dia.
-  const livres = HORARIOS_DISPONIVEIS.filter(hora => !ocupados.includes(hora))
+  const podeVoltar = mes.slice(0, 7) > hoje.slice(0, 7)
 
   return (
     <div className="screen active">
@@ -42,14 +35,11 @@ export function EtapaHorario({ data, horario, ocupados, aoEscolherData, aoEscolh
         {casas.map((dia, indice) => {
           if (!dia) return <button className="day" disabled key={indice} />
 
-          // Dia passado ou fechado nao pode ser escolhido.
-          const indisponivel = dia < hoje || !ehDiaDeAtendimento(dia)
-
           return (
             <button
               className={data === dia ? 'day selected' : 'day'}
               key={dia}
-              disabled={indisponivel}
+              disabled={!podeEscolher(dia)}
               onClick={() => aoEscolherData(dia)}
             >
               {paraData(dia).getDate()}
@@ -63,14 +53,14 @@ export function EtapaHorario({ data, horario, ocupados, aoEscolherData, aoEscolh
           <h3>Horários disponíveis</h3>
           <p>
             {dataPorExtenso(data)}
-            {livres.length > 0 ? ` · ${livres.length} opções` : ''}
+            {horarios.length > 0 ? ` · ${horarios.length} opções` : ''}
           </p>
 
-          {livres.length === 0 ? (
-            <p className="empty">Todos os horários deste dia já foram reservados. Escolha outra data.</p>
+          {horarios.length === 0 ? (
+            <p className="empty">Não há horário livre neste dia para o serviço escolhido. Tente outra data.</p>
           ) : (
             <div className="slots">
-              {livres.map(hora => (
+              {horarios.map(hora => (
                 <button
                   className={horario === hora ? 'slot selected' : 'slot'}
                   key={hora}

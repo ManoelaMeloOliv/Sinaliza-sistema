@@ -11,7 +11,8 @@ import { EtapaConfirmacao } from '../../componentes/paginaPublica/EtapaConfirmac
 import { ResumoLateral } from '../../componentes/paginaPublica/ResumoLateral'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { calcularSinal, regraDeSinal, rotuloDoSinal } from '../../utilitarios/valores'
-import { dataCurta } from '../../utilitarios/datas'
+import { dataCurta, dataDeHoje, ehDiaDeAtendimento } from '../../utilitarios/datas'
+import { dentroDaJanela, horariosDisponiveis, periodoEmMinutos } from '../../utilitarios/regras'
 
 const SERVICO = 0
 const HORARIO = 1
@@ -45,10 +46,15 @@ export function PaginaAgendamento() {
     ? `${dataCurta(data)}${horario ? ` · ${horario}` : ''}`
     : 'Horário a escolher'
 
-  // Horarios ja reservados no dia escolhido, para nao oferecer de novo.
-  const ocupadosNoDia = agendamentos
-    .filter(item => item.data === data)
-    .map(item => item.horario)
+  // Os horarios saem do expediente, da duracao do servico, do que ja esta
+  // reservado e das regras definidas em Configuracoes.
+  const horarios = data
+    ? horariosDisponiveis({ data, servico, agendamentos, servicos, configuracoes })
+    : []
+
+  const hoje = dataDeHoje()
+  const podeEscolher = dia =>
+    dia >= hoje && ehDiaDeAtendimento(dia) && dentroDaJanela(dia, hoje, configuracoes)
 
   // A regra de sinal do servico escolhido vale para todas as etapas seguintes.
   const regra = regraDeSinal(servico, configuracoes)
@@ -120,7 +126,8 @@ export function PaginaAgendamento() {
               <EtapaHorario
                 data={data}
                 horario={horario}
-                ocupados={ocupadosNoDia}
+                horarios={horarios}
+                podeEscolher={podeEscolher}
                 aoEscolherData={escolherData}
                 aoEscolherHorario={definirHorario}
                 aoVoltar={() => definirEtapa(SERVICO)}
@@ -146,12 +153,20 @@ export function PaginaAgendamento() {
                 profissional={perfil.profissional}
                 nomeDaLoja={marca.nome}
                 mostrarPoliticas={marca.mostrarPoliticas}
+                remarcacoes={configuracoes.remarcacoesPermitidas}
+                reembolso={configuracoes.cancelamentoComReembolso}
                 aoVoltar={() => definirEtapa(DADOS)}
                 aoAvancar={() => definirEtapa(PIX)}
               />
             )}
 
-            {etapaVisivel === PIX && <EtapaPix sinal={sinal} aoConfirmar={confirmar} />}
+            {etapaVisivel === PIX && (
+              <EtapaPix
+                sinal={sinal}
+                minutosDeValidade={periodoEmMinutos(configuracoes.validadeDoPix) || 15}
+                aoConfirmar={confirmar}
+              />
+            )}
 
             {etapaVisivel === CONFIRMACAO && (
               <EtapaConfirmacao

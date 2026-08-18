@@ -3,7 +3,7 @@ import { HORARIOS_DO_DIA } from '../../dados/dadosPainel'
 import { dataDeHoje, dataPorExtenso } from '../../utilitarios/datas'
 
 // Linha do tempo de um dia, marcando os horarios ainda livres.
-export function VisaoDia({ dia, agendamentos }) {
+export function VisaoDia({ dia, agendamentos, aoSelecionar }) {
   const doDia = agendamentos.filter(item => item.data === dia)
 
   return (
@@ -25,14 +25,16 @@ export function VisaoDia({ dia, agendamentos }) {
               <div>
                 {noHorario.length === 0 && <span className="free-slot">Horário disponível</span>}
                 {noHorario.map(agendamento => (
-                  <article
+                  <button
+                    type="button"
                     className={agendamento.situacao === 'Pago' ? 'day-booking confirmed' : 'day-booking'}
                     key={agendamento.id}
+                    onClick={() => aoSelecionar(agendamento)}
                   >
                     <b>{agendamento.cliente}</b>
                     <span>{agendamento.servico}</span>
                     <Etiqueta situacao={agendamento.situacao} />
-                  </article>
+                  </button>
                 ))}
               </div>
             </div>

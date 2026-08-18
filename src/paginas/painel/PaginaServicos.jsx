@@ -3,16 +3,19 @@ import { CabecalhoPagina } from '../../componentes/interface/CabecalhoPagina'
 import { IndicadorCompacto } from '../../componentes/interface/CartaoIndicador'
 import { CartaoServico } from '../../componentes/servicos/CartaoServico'
 import { ModalServico } from '../../componentes/servicos/ModalServico'
+import { ConfirmarExclusao } from '../../componentes/interface/ConfirmarExclusao'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { formatarMoeda } from '../../utilitarios/formatadores'
-import { SERVICOS_MAIS_AGENDADOS } from '../../dados/dadosPainel'
+import { receitaPotencial, servicosMaisAgendados } from '../../utilitarios/metricas'
 
 export function PaginaServicos() {
-  const { servicos, definirServicos, configuracoes, mostrarAviso } = useAplicacao()
+  const { servicos, agendamentos, definirServicos, configuracoes, mostrarAviso } = useAplicacao()
+  const ranking = servicosMaisAgendados(agendamentos)
   const [busca, definirBusca] = useState('')
   const [filtro, definirFiltro] = useState('Todos')
   const [ordenado, definirOrdenado] = useState(false)
   const [modal, definirModal] = useState(null) // null | { servico? }
+  const [aExcluir, definirAExcluir] = useState(null)
 
   const publicados = servicos.filter(servico => servico.publicado)
   const ticketMedio = servicos.length
@@ -47,9 +50,10 @@ export function PaginaServicos() {
     mostrarAviso('Serviço duplicado.')
   }
 
-  const excluir = servico => {
-    definirServicos(atual => atual.filter(item => item.id !== servico.id))
-    mostrarAviso(`${servico.nome} foi removido.`)
+  const excluir = () => {
+    definirServicos(atual => atual.filter(item => item.id !== aExcluir.id))
+    mostrarAviso(`${aExcluir.nome} foi removido do catálogo.`)
+    definirAExcluir(null)
   }
 
   return (
@@ -64,8 +68,8 @@ export function PaginaServicos() {
       <div className="service-summary">
         <IndicadorCompacto rotulo="Serviços publicados" valor={publicados.length} />
         <IndicadorCompacto rotulo="Ticket médio" valor={formatarMoeda(ticketMedio)} />
-        <IndicadorCompacto rotulo="Mais agendado" valor={SERVICOS_MAIS_AGENDADOS[0].nome} />
-        <IndicadorCompacto rotulo="Receita potencial" valor="R$ 8.420" />
+        <IndicadorCompacto rotulo="Mais agendado" valor={ranking[0]?.nome ?? '—'} />
+        <IndicadorCompacto rotulo="Receita potencial" valor={formatarMoeda(receitaPotencial(servicos, agendamentos))} />
       </div>
 
       <div className="card toolbar">
@@ -106,7 +110,7 @@ export function PaginaServicos() {
             aoPublicar={() => alterar(servico.id, { publicado: !servico.publicado })}
             aoEditar={() => definirModal({ servico })}
             aoDuplicar={() => duplicar(servico)}
-            aoExcluir={() => excluir(servico)}
+            aoExcluir={() => definirAExcluir(servico)}
           />
         ))}
         {visiveis.length === 0 && <p className="empty">Nenhum serviço encontrado.</p>}
@@ -118,6 +122,15 @@ export function PaginaServicos() {
           sinalPadrao={configuracoes.sinalPadrao}
           aoSalvar={salvar}
           aoFechar={() => definirModal(null)}
+        />
+      )}
+      {aExcluir && (
+        <ConfirmarExclusao
+          titulo={`Excluir ${aExcluir.nome}?`}
+          descricao="O serviço sai do catálogo e da página pública. Os agendamentos já feitos continuam na agenda."
+          rotuloConfirmar="Excluir serviço"
+          aoConfirmar={excluir}
+          aoCancelar={() => definirAExcluir(null)}
         />
       )}
     </section>

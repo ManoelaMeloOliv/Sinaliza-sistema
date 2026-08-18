@@ -1,7 +1,7 @@
 import { DIAS_DA_SEMANA_CURTOS, dataDeHoje, gradeDoMes, paraData } from '../../utilitarios/datas'
 
 // Calendario mensal de verdade: seis semanas alinhadas ao domingo.
-export function VisaoMes({ mes, agendamentos, aoAbrirAgendamento }) {
+export function VisaoMes({ mes, agendamentos, aoSelecionar }) {
   const casas = gradeDoMes(mes)
   const hoje = dataDeHoje()
 
@@ -28,7 +28,7 @@ export function VisaoMes({ mes, agendamentos, aoAbrirAgendamento }) {
                 <button
                   className={evento.situacao === 'Pago' ? 'month-event confirmed' : 'month-event'}
                   key={evento.id}
-                  onClick={() => aoAbrirAgendamento(evento)}
+                  onClick={() => aoSelecionar(evento)}
                 >
                   <b>{evento.horario}</b> {evento.cliente}
                 </button>

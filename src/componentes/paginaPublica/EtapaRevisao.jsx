@@ -1,7 +1,7 @@
 import { formatarMoeda } from '../../utilitarios/formatadores'
 import { Icone } from '../interface/Icones'
 
-export function EtapaRevisao({ servico, sinal, rotuloSinal, quando, profissional, nomeDaLoja, mostrarPoliticas, aoVoltar, aoAvancar }) {
+export function EtapaRevisao({ servico, sinal, rotuloSinal, quando, profissional, nomeDaLoja, mostrarPoliticas, remarcacoes, reembolso, aoVoltar, aoAvancar }) {
   return (
     <div className="screen active">
       <h2>Revise antes de reservar</h2>
@@ -33,8 +33,10 @@ export function EtapaRevisao({ servico, sinal, rotuloSinal, quando, profissional
 
       {mostrarPoliticas && (
         <p className="terms">
-          Ao continuar, você concorda com a política do {nomeDaLoja}: é possível remarcar uma vez;
-          cancelamentos com menos de 24h não recebem devolução do sinal.
+          Ao continuar, você concorda com a política do {nomeDaLoja}: {remarcacoes?.toLowerCase() ?? 'uma remarcação'} permitida;
+          {reembolso === 'Sem reembolso'
+            ? ' o sinal não é devolvido em caso de cancelamento.'
+            : ` cancelamentos fora do prazo de "${reembolso?.toLowerCase() ?? 'até 24 horas antes'}" não recebem devolução do sinal.`}
         </p>
       )}
 

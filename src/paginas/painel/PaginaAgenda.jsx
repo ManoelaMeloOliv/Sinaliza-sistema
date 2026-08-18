@@ -26,7 +26,7 @@ export function PaginaAgenda() {
   const [situacao, definirSituacao] = useState('')
   const [referencia, definirReferencia] = useState(dataDeHoje())
   const [limite, definirLimite] = useState(LIMITE_INICIAL)
-  const [modal, definirModal] = useState(null) // 'agendamento' | 'bloqueio' | null
+  const [modal, definirModal] = useState(null) // { modo } ou { agendamento }
 
   const dias = semanaDeTrabalho(referencia)
   const hoje = dataDeHoje()
@@ -64,8 +64,7 @@ export function PaginaAgenda() {
     Lista: `${agendamentos.length} no total`,
   }[visao]
 
-  const verDetalhes = agendamento =>
-    mostrarAviso(`${agendamento.cliente} · ${agendamento.servico} em ${dataCurta(agendamento.data)} às ${agendamento.horario}.`)
+  const abrir = agendamento => definirModal({ agendamento })
 
   return (
     <section className="page active">
@@ -73,7 +72,7 @@ export function PaginaAgenda() {
         etiqueta="Organização"
         titulo="Agenda"
         descricao="Gerencie horários, pagamentos e confirmações em um só lugar."
-        acao={<button className="btn" onClick={() => definirModal('agendamento')}>+ Novo agendamento</button>}
+        acao={<button className="btn" onClick={() => definirModal({ modo: 'agendamento' })}>+ Novo agendamento</button>}
       />
 
       <div className="agenda-summary">
@@ -126,10 +125,10 @@ export function PaginaAgenda() {
 
       <div className="calendar-layout">
         <article className="card table-wrap">
-          {visao === 'Dia' && <VisaoDia dia={referencia} agendamentos={doPeriodo} />}
-          {visao === 'Semana' && <VisaoSemana dias={dias} agendamentos={doPeriodo} />}
-          {visao === 'Mês' && <VisaoMes mes={referencia} agendamentos={doPeriodo} aoAbrirAgendamento={verDetalhes} />}
-          {visao === 'Lista' && <VisaoLista agendamentos={doPeriodo} aoVerDetalhes={verDetalhes} />}
+          {visao === 'Dia' && <VisaoDia dia={referencia} agendamentos={doPeriodo} aoSelecionar={abrir} />}
+          {visao === 'Semana' && <VisaoSemana dias={dias} agendamentos={doPeriodo} aoSelecionar={abrir} />}
+          {visao === 'Mês' && <VisaoMes mes={referencia} agendamentos={doPeriodo} aoSelecionar={abrir} />}
+          {visao === 'Lista' && <VisaoLista agendamentos={doPeriodo} aoSelecionar={abrir} />}
         </article>
 
         <aside className="card">
@@ -145,14 +144,21 @@ export function PaginaAgenda() {
           <button
             className="btn secondary"
             style={{ width: '100%', marginTop: 15 }}
-            onClick={() => definirModal('bloqueio')}
+            onClick={() => definirModal({ modo: 'bloqueio' })}
           >
             Bloquear horário
           </button>
         </aside>
       </div>
 
-      {modal && <FormularioAgendamento modo={modal} dataSugerida={referencia} aoConcluir={() => definirModal(null)} />}
+      {modal && (
+        <FormularioAgendamento
+          modo={modal.modo}
+          agendamento={modal.agendamento}
+          dataSugerida={referencia}
+          aoConcluir={() => definirModal(null)}
+        />
+      )}
     </section>
   )
 }

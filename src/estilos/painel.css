@@ -1295,3 +1295,24 @@
   border-radius: 2px;
   background: var(--p);
 }
+
+/* Os agendamentos viraram botao para poder abrir a edicao. Sem isto herdariam
+   o alinhamento central e a largura automatica dos botoes. */
+button.booking,
+button.day-booking {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.booking:hover,
+button.day-booking:hover {
+  filter: brightness(0.97);
+}
+
+button.day-booking {
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}

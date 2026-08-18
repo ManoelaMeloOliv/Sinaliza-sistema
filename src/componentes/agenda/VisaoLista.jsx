@@ -1,7 +1,7 @@
 import { Etiqueta } from '../interface/Etiqueta'
 import { dataCurta } from '../../utilitarios/datas'
 
-export function VisaoLista({ agendamentos, aoVerDetalhes }) {
+export function VisaoLista({ agendamentos, aoSelecionar }) {
   // Da lista sim faz sentido ver tudo em ordem cronologica.
   const ordenados = [...agendamentos].sort(
     (a, b) => a.data.localeCompare(b.data) || a.horario.localeCompare(b.horario),
@@ -32,7 +32,7 @@ export function VisaoLista({ agendamentos, aoVerDetalhes }) {
               <td>{agendamento.servico}</td>
               <td><Etiqueta situacao={agendamento.situacao} /></td>
               <td>
-                <button className="table-action" onClick={() => aoVerDetalhes(agendamento)}>Detalhes</button>
+                <button className="table-action" onClick={() => aoSelecionar(agendamento)}>Abrir</button>
               </td>
             </tr>
           ))}

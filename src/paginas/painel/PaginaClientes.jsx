@@ -6,9 +6,11 @@ import { ModalCliente } from '../../componentes/clientes/ModalCliente'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { iniciais } from '../../utilitarios/formatadores'
 import { baixarCsv } from '../../utilitarios/csv'
+import { resumoDeClientes } from '../../utilitarios/metricas'
 
 export function PaginaClientes() {
-  const { clientes, definirClientes, mostrarAviso } = useAplicacao()
+  const { clientes, agendamentos, definirClientes, mostrarAviso } = useAplicacao()
+  const resumo = resumoDeClientes(clientes, agendamentos)
   const [busca, definirBusca] = useState('')
   const [situacao, definirSituacao] = useState('')
   const [modalAberto, definirModalAberto] = useState(false)
@@ -48,10 +50,10 @@ export function PaginaClientes() {
       />
 
       <div className="client-summary">
-        <IndicadorCompacto rotulo="Total de clientes" valor={124 + clientes.length} />
-        <IndicadorCompacto rotulo="Novas neste mês" valor="14" />
-        <IndicadorCompacto rotulo="Taxa de retorno" valor="72%" />
-        <IndicadorCompacto rotulo="Clientes bloqueadas" valor="2" />
+        <IndicadorCompacto rotulo="Total de clientes" valor={resumo.total} />
+        <IndicadorCompacto rotulo="Novas neste mês" valor={resumo.novasNoMes} />
+        <IndicadorCompacto rotulo="Taxa de retorno" valor={`${resumo.taxaDeRetorno}%`} />
+        <IndicadorCompacto rotulo="Situação pendente" valor={resumo.pendentes} />
       </div>
 
       <article className="card">

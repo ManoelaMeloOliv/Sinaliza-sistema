@@ -6,22 +6,32 @@ import { Icone } from '../../componentes/interface/Icones'
 import { ListaEventos } from '../../componentes/agendamentos/ListaEventos'
 import { FormularioAgendamento } from '../../componentes/agendamentos/FormularioAgendamento'
 import { useAplicacao } from '../../ganchos/useAplicacao'
-import { dataDeHoje, dataPorExtenso } from '../../utilitarios/datas'
+import { dataCurta, dataDeHoje, dataPorExtenso } from '../../utilitarios/datas'
+import { formatarMoeda } from '../../utilitarios/formatadores'
 import {
-  ATIVIDADE_RECENTE,
-  FATURAMENTO_SEMANAL,
-  OCUPACAO,
-  SERVICOS_MAIS_AGENDADOS,
-} from '../../dados/dadosPainel'
+  atividadeRecente,
+  faturamentoDaSemana,
+  ocupacaoDaSemana,
+  resumoDoMes,
+  servicosMaisAgendados,
+} from '../../utilitarios/metricas'
+
+const DIAS_CURTOS = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB']
 
 export function PaginaInicial() {
-  const { agendamentos, perfil } = useAplicacao()
+  const { agendamentos, servicos, configuracoes, perfil } = useAplicacao()
   const [modalAberto, definirModalAberto] = useState(false)
   const irPara = useNavigate()
 
-  const percentualOcupado = Math.round((OCUPACAO.ocupados / OCUPACAO.total) * 100)
-
   const hoje = dataDeHoje()
+  const mes = resumoDoMes(agendamentos, servicos, configuracoes, hoje)
+  const grafico = faturamentoDaSemana(agendamentos, servicos, hoje)
+  const ocupacao = ocupacaoDaSemana(agendamentos, servicos, hoje)
+  const ranking = servicosMaisAgendados(agendamentos)
+  const atividade = atividadeRecente(agendamentos, servicos, configuracoes)
+
+  const percentualOcupado = ocupacao.total ? Math.round((ocupacao.ocupados / ocupacao.total) * 100) : 0
+
   const deHoje = agendamentos
     .filter(item => item.data === hoje)
     .sort((a, b) => a.horario.localeCompare(b.horario))
@@ -29,17 +39,37 @@ export function PaginaInicial() {
   return (
     <section className="page active">
       <CabecalhoPagina
-        etiqueta={dataPorExtenso()}
+        etiqueta={dataPorExtenso(hoje)}
         titulo="Visão geral"
         descricao={`Desempenho do ${perfil.nomeDoEspaco} e compromissos do dia.`}
         acao={<button className="btn" onClick={() => definirModalAberto(true)}>+ Novo agendamento</button>}
       />
 
       <div className="stats">
-        <CartaoIndicador rotulo="Faturamento no mês" icone="dinheiro" valor="R$ 4.860" tendencia="↑ 18% comparado a julho" />
-        <CartaoIndicador rotulo="Agendamentos" icone="agendamentos" valor={34 + agendamentos.length} tendencia="↑ 6 novos esta semana" />
-        <CartaoIndicador rotulo="Sinais recebidos" icone="recebido" valor="R$ 1.458" tendencia="100% repassados" />
-        <CartaoIndicador rotulo="Faltas evitadas" icone="escudo" valor="R$ 720" tendencia="6 horários protegidos" />
+        <CartaoIndicador
+          rotulo="Faturamento no mês"
+          icone="dinheiro"
+          valor={formatarMoeda(mes.faturamento)}
+          tendencia={`${mes.agendamentos} atendimento(s) no mês`}
+        />
+        <CartaoIndicador
+          rotulo="Agendamentos"
+          icone="agendamentos"
+          valor={mes.agendamentos}
+          tendencia={mes.aguardando ? `${mes.aguardando} aguardando sinal` : 'Todos confirmados'}
+        />
+        <CartaoIndicador
+          rotulo="Sinais recebidos"
+          icone="recebido"
+          valor={formatarMoeda(mes.sinais)}
+          tendencia="Pagamentos confirmados"
+        />
+        <CartaoIndicador
+          rotulo="Horários protegidos"
+          icone="escudo"
+          valor={formatarMoeda(mes.protegido)}
+          tendencia={`${mes.horariosProtegidos} horário(s) com sinal pago`}
+        />
       </div>
 
       <div className="grid-2">
@@ -49,10 +79,10 @@ export function PaginaInicial() {
             <button onClick={() => irPara('/painel/financeiro')}>Ver relatório</button>
           </div>
           <div className="chart">
-            {FATURAMENTO_SEMANAL.map(coluna => (
-              <div className="bar-col" key={coluna.dia}>
+            {grafico.map(coluna => (
+              <div className="bar-col" key={coluna.data} title={`${dataCurta(coluna.data)}: ${formatarMoeda(coluna.total)}`}>
                 <div className="bar" style={{ height: `${coluna.altura}%` }} />
-                <small>{coluna.dia}</small>
+                <small>{DIAS_CURTOS[new Date(coluna.data + 'T00:00').getDay()]}</small>
               </div>
             ))}
           </div>
@@ -74,7 +104,8 @@ export function PaginaInicial() {
             <button onClick={() => irPara('/painel/servicos')}>Detalhes</button>
           </div>
           <div className="metric-list">
-            {SERVICOS_MAIS_AGENDADOS.map(servico => (
+            {ranking.length === 0 && <p className="empty">Ainda não há agendamentos.</p>}
+            {ranking.map(servico => (
               <div className="metric-line" key={servico.nome}>
                 <span>{servico.nome}</span>
                 <b>{servico.percentual}%</b>
@@ -92,9 +123,11 @@ export function PaginaInicial() {
               style={{ background: `conic-gradient(var(--p) 0 ${percentualOcupado}%, var(--soft) ${percentualOcupado}%)` }}
             />
             <div>
-              <b>{OCUPACAO.ocupados} de {OCUPACAO.total} horários</b>
-              <p style={{ color: 'var(--muted)', fontSize: 11, lineHeight: 1.6 }}>{OCUPACAO.observacao}</p>
-              <span className="trend">{OCUPACAO.tendencia}</span>
+              <b>{ocupacao.ocupados} de {ocupacao.total} encaixes</b>
+              <p style={{ color: 'var(--muted)', fontSize: 11, lineHeight: 1.6 }}>
+                {ocupacao.livres} ainda disponíveis nesta semana.
+              </p>
+              <span className="trend">{percentualOcupado}% da semana ocupada</span>
             </div>
           </div>
         </article>
@@ -102,11 +135,12 @@ export function PaginaInicial() {
         <article className="card">
           <div className="card-title"><h2>Atividade recente</h2></div>
           <div className="activity">
-            {ATIVIDADE_RECENTE.map(item => (
-              <div className="activity-item" key={item.titulo}>
+            {atividade.length === 0 && <p className="empty">Nada por aqui ainda.</p>}
+            {atividade.map(item => (
+              <div className="activity-item" key={item.id}>
                 <i className="activity-dot"><Icone nome={item.icone} className="" /></i>
                 <p>
-                  <b>{item.titulo}</b>
+                  <b>{item.titulo}{item.valor > 0 && ` · ${formatarMoeda(item.valor)}`}</b>
                   <small>{item.detalhe}</small>
                 </p>
               </div>

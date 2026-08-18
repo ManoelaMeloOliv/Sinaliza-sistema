@@ -3,26 +3,41 @@ import { CabecalhoPagina } from '../../componentes/interface/CabecalhoPagina'
 import { Etiqueta } from '../../componentes/interface/Etiqueta'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { baixarCsv } from '../../utilitarios/csv'
+import { formatarMoeda } from '../../utilitarios/formatadores'
+import { dataCurta, dataDeHoje, mesPorExtenso, somarMeses } from '../../utilitarios/datas'
 import {
-  COMPOSICAO_DOS_RECEBIMENTOS,
-  ENTRADAS_POR_SEMANA,
-  INDICADORES_DO_FINANCEIRO,
-  MOVIMENTACOES,
-} from '../../dados/dadosPainel'
+  composicaoDosRecebimentos,
+  faturamentoDaSemana,
+  movimentacoes,
+  resumoFinanceiro,
+} from '../../utilitarios/metricas'
+
+const LINHAS_INICIAIS = 6
 
 export function PaginaFinanceiro() {
-  const { mostrarAviso } = useAplicacao()
-  const [periodo, definirPeriodo] = useState('Agosto de 2026')
+  const { agendamentos, servicos, configuracoes, mostrarAviso } = useAplicacao()
+  const hoje = dataDeHoje()
+
+  const [mes, definirMes] = useState(hoje)
   const [extratoCompleto, definirExtratoCompleto] = useState(false)
 
-  const linhas = extratoCompleto ? MOVIMENTACOES : MOVIMENTACOES.slice(0, 4)
+  // O periodo escolhido filtra tudo o que a tela mostra.
+  const doMes = agendamentos.filter(item => item.data.slice(0, 7) === mes.slice(0, 7))
+
+  const resumo = resumoFinanceiro(doMes, servicos, configuracoes, hoje)
+  const composicao = composicaoDosRecebimentos(doMes, servicos, configuracoes)
+  const semana = faturamentoDaSemana(agendamentos, servicos, hoje)
+  const lancamentos = movimentacoes(doMes, servicos, configuracoes, hoje)
+
+  const linhas = extratoCompleto ? lancamentos : lancamentos.slice(0, LINHAS_INICIAIS)
+  const totalDaComposicao = composicao.reduce((soma, item) => soma + item.valor, 0)
 
   const exportar = () => {
-    baixarCsv('financeiro.csv', [
-      ['Data', 'Descrição', 'Identificador', 'Valor', 'Situação'],
-      ...MOVIMENTACOES.map(m => [m.data, m.descricao, m.identificador, m.valor, m.situacao]),
+    baixarCsv(`financeiro-${mes.slice(0, 7)}.csv`, [
+      ['Data', 'Horário', 'Descrição', 'Valor do sinal', 'Situação'],
+      ...lancamentos.map(m => [dataCurta(m.data), m.horario, m.descricao, m.valor, m.situacao]),
     ])
-    mostrarAviso('Relatório exportado em CSV.')
+    mostrarAviso(`${lancamentos.length} lançamento(s) exportado(s) em CSV.`)
   }
 
   return (
@@ -33,9 +48,11 @@ export function PaginaFinanceiro() {
         descricao="Conciliação dos sinais recebidos e valores enviados à sua conta."
         acao={
           <div className="toolbar-right">
-            <select className="filter-select" value={periodo} onChange={evento => definirPeriodo(evento.target.value)}>
-              <option>Agosto de 2026</option>
-              <option>Julho de 2026</option>
+            <select className="filter-select" value={mes} onChange={evento => definirMes(evento.target.value)}>
+              {[0, -1, -2].map(passo => {
+                const opcao = somarMeses(hoje, passo)
+                return <option key={opcao} value={opcao}>{mesPorExtenso(opcao)}</option>
+              })}
             </select>
             <button className="btn secondary" onClick={exportar}>Exportar relatório</button>
           </div>
@@ -43,29 +60,51 @@ export function PaginaFinanceiro() {
       />
 
       <div className="finance-grid">
-        {INDICADORES_DO_FINANCEIRO.map(indicador => (
-          <article className="card" key={indicador.rotulo}>
-            <small>{indicador.rotulo}</small>
-            <div className="amount">{indicador.valor}</div>
-            <span className="trend">{indicador.detalhe}</span>
-            <div className="progress">
-              <i style={{ width: `${indicador.largura}%`, background: indicador.cor || undefined }} />
-            </div>
-          </article>
-        ))}
+        <article className="card">
+          <small>Recebido em sinais</small>
+          <div className="amount">{formatarMoeda(resumo.recebido)}</div>
+          <span className="trend">{resumo.pagamentos} pagamento(s) confirmado(s)</span>
+          <div className="progress">
+            <i style={{ width: `${resumo.recebido ? 100 : 0}%` }} />
+          </div>
+        </article>
+
+        <article className="card">
+          <small>Já repassado</small>
+          <div className="amount">{formatarMoeda(resumo.repassado)}</div>
+          <span className="trend">Atendimentos já realizados</span>
+          <div className="progress">
+            <i style={{
+              width: `${resumo.recebido ? Math.round((resumo.repassado / resumo.recebido) * 100) : 0}%`,
+              background: '#12b981',
+            }} />
+          </div>
+        </article>
+
+        <article className="card">
+          <small>A repassar</small>
+          <div className="amount">{formatarMoeda(resumo.aReceber)}</div>
+          <span style={{ color: 'var(--muted)' }}>Sinais de horários futuros</span>
+          <div className="progress">
+            <i style={{
+              width: `${resumo.recebido ? Math.round((resumo.aReceber / resumo.recebido) * 100) : 0}%`,
+              background: '#ff6b5c',
+            }} />
+          </div>
+        </article>
       </div>
 
       <div className="finance-layout">
         <article className="card">
           <div className="card-title">
-            <h2>Entradas por semana</h2>
-            <span className="tag">+18,4%</span>
+            <h2>Entradas dos últimos 7 dias</h2>
+            <span className="tag">{formatarMoeda(semana.reduce((soma, dia) => soma + dia.total, 0))}</span>
           </div>
           <div className="finance-chart">
-            {ENTRADAS_POR_SEMANA.map(semana => (
-              <div className="finance-bar" key={semana.rotulo}>
-                <i style={{ '--h': `${semana.altura}%` }} />
-                {semana.rotulo}
+            {semana.map(dia => (
+              <div className="finance-bar" key={dia.data} title={`${dataCurta(dia.data)}: ${formatarMoeda(dia.total)}`}>
+                <i style={{ '--h': `${dia.altura}%` }} />
+                {dataCurta(dia.data).slice(0, 6)}
               </div>
             ))}
           </div>
@@ -74,10 +113,14 @@ export function PaginaFinanceiro() {
         <article className="card">
           <div className="card-title"><h2>Composição dos recebimentos</h2></div>
           <div className="finance-breakdown">
-            {COMPOSICAO_DOS_RECEBIMENTOS.map(item => (
+            {composicao.length === 0 && <p className="empty">Nenhum sinal recebido neste período.</p>}
+            {composicao.map(item => (
               <div className="finance-item" key={item.nome}>
-                <span>{item.nome}</span>
-                <b>{item.valor}</b>
+                <span>
+                  {item.nome}
+                  {totalDaComposicao > 0 && ` · ${Math.round((item.valor / totalDaComposicao) * 100)}%`}
+                </span>
+                <b>{formatarMoeda(item.valor)}</b>
               </div>
             ))}
           </div>
@@ -86,10 +129,12 @@ export function PaginaFinanceiro() {
 
       <article className="card table-wrap">
         <div className="card-title">
-          <h2>Movimentações recentes</h2>
-          <button onClick={() => { definirExtratoCompleto(true); mostrarAviso('Exibindo o extrato completo do período.') }}>
-            Ver extrato completo
-          </button>
+          <h2>Movimentações do período</h2>
+          {lancamentos.length > LINHAS_INICIAIS && !extratoCompleto && (
+            <button onClick={() => definirExtratoCompleto(true)}>
+              Ver extrato completo ({lancamentos.length})
+            </button>
+          )}
         </div>
 
         <table className="table">
@@ -97,19 +142,20 @@ export function PaginaFinanceiro() {
             <tr>
               <th>Data</th>
               <th>Descrição</th>
-              <th>Identificador</th>
-              <th>Valor</th>
+              <th>Valor do sinal</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {linhas.map(movimentacao => (
-              <tr key={movimentacao.identificador}>
-                <td>{movimentacao.data}</td>
-                <td>{movimentacao.descricao}</td>
-                <td>{movimentacao.identificador}</td>
-                <td>{movimentacao.valor}</td>
-                <td><Etiqueta situacao={movimentacao.situacao} /></td>
+            {linhas.length === 0 && (
+              <tr><td colSpan="4" className="empty">Nenhuma movimentação neste período.</td></tr>
+            )}
+            {linhas.map(item => (
+              <tr key={item.id}>
+                <td>{dataCurta(item.data)} · {item.horario}</td>
+                <td>{item.descricao}</td>
+                <td>{formatarMoeda(item.valor)}</td>
+                <td><Etiqueta situacao={item.situacao} /></td>
               </tr>
             ))}
           </tbody>
