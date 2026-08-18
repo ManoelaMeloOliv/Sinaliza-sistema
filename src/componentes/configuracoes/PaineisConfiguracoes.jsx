@@ -1,7 +1,7 @@
 import { Campo } from '../interface/Campo'
 import { Interruptor } from '../interface/Interruptor'
 import { useAplicacao } from '../../ganchos/useAplicacao'
-import { DISPONIBILIDADE_SEMANAL } from '../../dados/dadosPainel'
+import { EditorExpediente } from './EditorExpediente'
 import { SINAL_FIXO, TIPOS_DE_SINAL } from '../../utilitarios/valores'
 
 // Linha "texto a esquerda, acao a direita" usada varias vezes nas configuracoes.
@@ -64,7 +64,7 @@ export function PainelPerfil() {
 }
 
 export function PainelAgenda() {
-  const { configuracoes, definirConfiguracoes, mostrarAviso } = useAplicacao()
+  const { configuracoes, definirConfiguracoes } = useAplicacao()
   const alterar = campo => evento =>
     definirConfiguracoes(atual => ({ ...atual, [campo]: evento.target.value }))
 
@@ -96,19 +96,7 @@ export function PainelAgenda() {
         </div>
       </article>
 
-      <article className="card">
-        <div className="card-title"><h2>Disponibilidade semanal</h2></div>
-        {DISPONIBILIDADE_SEMANAL.map(faixa => (
-          <LinhaDeControle key={faixa.periodo} titulo={faixa.periodo} detalhe={faixa.detalhe}>
-            <button
-              className="small-btn"
-              onClick={() => mostrarAviso(`${faixa.periodo}: editor disponível nesta demonstração.`)}
-            >
-              Editar
-            </button>
-          </LinhaDeControle>
-        ))}
-      </article>
+      <EditorExpediente />
     </>
   )
 }

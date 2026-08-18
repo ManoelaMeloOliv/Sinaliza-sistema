@@ -3,6 +3,7 @@ import { CabecalhoPagina } from '../../componentes/interface/CabecalhoPagina'
 import { IndicadorCompacto } from '../../componentes/interface/CartaoIndicador'
 import { Etiqueta } from '../../componentes/interface/Etiqueta'
 import { ModalCliente } from '../../componentes/clientes/ModalCliente'
+import { HistoricoCliente } from '../../componentes/clientes/HistoricoCliente'
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { iniciais } from '../../utilitarios/formatadores'
 import { baixarCsv } from '../../utilitarios/csv'
@@ -14,6 +15,7 @@ export function PaginaClientes() {
   const [busca, definirBusca] = useState('')
   const [situacao, definirSituacao] = useState('')
   const [modalAberto, definirModalAberto] = useState(false)
+  const [historico, definirHistorico] = useState(null)
 
   const visiveis = clientes
     .filter(cliente =>
@@ -25,7 +27,7 @@ export function PaginaClientes() {
       ['Cliente', 'WhatsApp', 'Último serviço', 'Agendamentos', 'Situação'],
       ...visiveis.map(c => [c.nome, c.telefone, c.ultimoServico, c.agendamentos, c.situacao]),
     ])
-    mostrarAviso(`${visiveis.length} cliente(s) exportado(s) em CSV.`)
+    mostrarAviso(`${visiveis.length} cliente(s) baixado(s). Abra o arquivo no Excel.`)
   }
 
   const salvar = dados => {
@@ -70,7 +72,7 @@ export function PaginaClientes() {
               <option>Ativa</option>
               <option>Pendente</option>
             </select>
-            <button className="small-btn" onClick={exportar}>Exportar</button>
+            <button className="small-btn" onClick={exportar}>Baixar lista</button>
           </div>
         </div>
 
@@ -105,7 +107,7 @@ export function PaginaClientes() {
                   <td>
                     <button
                       className="table-action"
-                      onClick={() => mostrarAviso(`${cliente.nome}: ${cliente.agendamentos} agendamentos registrados.`)}
+                      onClick={() => definirHistorico(cliente)}
                     >
                       Ver histórico
                     </button>
@@ -121,6 +123,7 @@ export function PaginaClientes() {
       </article>
 
       {modalAberto && <ModalCliente aoSalvar={salvar} aoFechar={() => definirModalAberto(false)} />}
+      {historico && <HistoricoCliente cliente={historico} aoFechar={() => definirHistorico(null)} />}
     </section>
   )
 }

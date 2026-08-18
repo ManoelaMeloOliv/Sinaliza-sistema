@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { CabecalhoPagina } from '../../componentes/interface/CabecalhoPagina'
 import { EditorMarca } from '../../componentes/marca/EditorMarca'
+import { PainelPlano } from '../../componentes/configuracoes/PainelPlano'
+import { PainelLinkPublico } from '../../componentes/configuracoes/PainelLinkPublico'
+import { PainelBackup } from '../../componentes/configuracoes/PainelBackup'
 import {
   PainelAgenda,
   PainelConta,
@@ -13,10 +16,13 @@ import { useAplicacao } from '../../ganchos/useAplicacao'
 const ABAS = [
   { chave: 'perfil', rotulo: 'Perfil e página', Painel: PainelPerfil },
   { chave: 'identidade', rotulo: 'Identidade visual', Painel: EditorMarca },
+  { chave: 'link', rotulo: 'Link e QR Code', Painel: PainelLinkPublico },
   { chave: 'agenda', rotulo: 'Agenda e horários', Painel: PainelAgenda },
   { chave: 'pagamentos', rotulo: 'Pagamentos', Painel: PainelPagamentos },
   { chave: 'notificacoes', rotulo: 'Notificações', Painel: PainelNotificacoes },
   { chave: 'conta', rotulo: 'Conta e segurança', Painel: PainelConta },
+  { chave: 'plano', rotulo: 'Plano e cobrança', Painel: PainelPlano },
+  { chave: 'backup', rotulo: 'Cópia de segurança', Painel: PainelBackup },
 ]
 
 export function PaginaConfiguracoes() {
@@ -52,7 +58,7 @@ export function PaginaConfiguracoes() {
           </div>
 
           {/* A identidade visual tem o proprio botao "Publicar identidade". */}
-          {abaAtiva !== 'identidade' && (
+          {abaAtiva !== 'identidade' && abaAtiva !== 'plano' && abaAtiva !== 'link' && abaAtiva !== 'backup' && (
             <button
               className="btn"
               style={{ marginTop: 16 }}

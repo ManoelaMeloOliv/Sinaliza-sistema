@@ -1,4 +1,5 @@
 import { dataDeHoje, semanaDeTrabalho } from '../utilitarios/datas'
+import { EXPEDIENTE as EXPEDIENTE_PADRAO } from '../utilitarios/regras'
 
 // Dados de demonstracao que o usuario edita pelo painel. Ficam salvos no localStorage.
 
@@ -74,6 +75,8 @@ export const perfilInicial = {
 }
 
 export const configuracoesIniciais = {
+  plano: 'free',
+  expediente: EXPEDIENTE_PADRAO,
   antecedenciaMinima: '2 horas',
   janelaMaxima: '60 dias',
   intervaloEntreServicos: '15 minutos',

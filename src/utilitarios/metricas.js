@@ -64,12 +64,12 @@ export function faturamentoDaSemana(agendamentos, servicos, hoje = dataDeHoje())
 }
 
 // Quantos encaixes de 30 minutos existem na semana e quantos ja estao tomados.
-export function ocupacaoDaSemana(agendamentos, servicos, hoje = dataDeHoje()) {
+export function ocupacaoDaSemana(agendamentos, servicos, hoje = dataDeHoje(), configuracoes = {}) {
   const dias = semanaDeTrabalho(hoje)
 
   let total = 0
   dias.filter(ehDiaDeAtendimento).forEach(data => {
-    const expediente = expedienteDoDia(data)
+    const expediente = expedienteDoDia(data, configuracoes.expediente)
     if (!expediente) return
     const minutos = horarioEmMinutos(expediente.fecha) - horarioEmMinutos(expediente.abre)
     const almoco = expediente.intervalo

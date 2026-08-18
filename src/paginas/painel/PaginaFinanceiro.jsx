@@ -37,7 +37,7 @@ export function PaginaFinanceiro() {
       ['Data', 'Horário', 'Descrição', 'Valor do sinal', 'Situação'],
       ...lancamentos.map(m => [dataCurta(m.data), m.horario, m.descricao, m.valor, m.situacao]),
     ])
-    mostrarAviso(`${lancamentos.length} lançamento(s) exportado(s) em CSV.`)
+    mostrarAviso(`${lancamentos.length} lançamento(s) baixado(s). Abra o arquivo no Excel.`)
   }
 
   return (
@@ -54,7 +54,7 @@ export function PaginaFinanceiro() {
                 return <option key={opcao} value={opcao}>{mesPorExtenso(opcao)}</option>
               })}
             </select>
-            <button className="btn secondary" onClick={exportar}>Exportar relatório</button>
+            <button className="btn secondary" onClick={exportar}>Baixar relatório</button>
           </div>
         }
       />

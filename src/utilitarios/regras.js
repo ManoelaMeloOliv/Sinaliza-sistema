@@ -55,8 +55,9 @@ export const EXPEDIENTE = {
 
 export const PASSO_DA_GRADE = 30 // de quanto em quanto tempo um horario pode comecar
 
-export function expedienteDoDia(data) {
-  return EXPEDIENTE[diaDaSemana(data)]
+// O expediente pode ser editado em Configuracoes; sem isso vale o padrao.
+export function expedienteDoDia(data, expedientes = EXPEDIENTE) {
+  return expedientes[diaDaSemana(data)] ?? null
 }
 
 // --- disponibilidade ----------------------------------------------------
@@ -91,7 +92,7 @@ export function horariosDisponiveis({
   agora = new Date(),
   ignorarId = null,
 }) {
-  const expediente = expedienteDoDia(data)
+  const expediente = expedienteDoDia(data, configuracoes.expediente)
   if (!expediente) return []
 
   const duracao = duracaoEmMinutos(servico?.duracao)

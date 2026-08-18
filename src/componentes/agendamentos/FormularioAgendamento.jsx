@@ -5,6 +5,8 @@ import { formatarMoeda } from '../../utilitarios/formatadores'
 import { calcularSinal, regraDeSinal, rotuloDoSinal, servicoPorNome } from '../../utilitarios/valores'
 import { dataDeHoje } from '../../utilitarios/datas'
 import { existeConflito, horariosDisponiveis } from '../../utilitarios/regras'
+import { planoPorId, usoDoPlano } from '../../dados/planos'
+import { abrirWhatsapp, MODELOS } from '../../utilitarios/whatsapp'
 
 function limiteDeRemarcacoes(texto) {
   if (/nenhuma/i.test(texto ?? '')) return 0
@@ -12,7 +14,7 @@ function limiteDeRemarcacoes(texto) {
 }
 
 export function FormularioAgendamento({ modo = 'agendamento', agendamento, dataSugerida, aoConcluir }) {
-  const { servicos, agendamentos, configuracoes, definirAgendamentos, definirClientes, mostrarAviso } = useAplicacao()
+  const { servicos, agendamentos, configuracoes, marca, definirAgendamentos, definirClientes, mostrarAviso } = useAplicacao()
 
   const editando = Boolean(agendamento)
   const bloqueio = modo === 'bloqueio' || agendamento?.servico === 'Bloqueio'
@@ -60,8 +62,18 @@ export function FormularioAgendamento({ modo = 'agendamento', agendamento, dataS
   const remarcacoesFeitas = agendamento?.remarcacoes ?? 0
   const limite = limiteDeRemarcacoes(configuracoes.remarcacoesPermitidas)
 
+  const plano = planoPorId(configuracoes.plano)
+  const uso = usoDoPlano({ plano, servicos, agendamentos, hoje: dataDeHoje() })
+
   const enviar = evento => {
     evento.preventDefault()
+
+    if (!editando && uso.agendamentos.estourou) {
+      mostrarAviso(
+        `O plano ${plano.nome} permite ${plano.limites.agendamentosPorMes} agendamentos por mês. Suba de plano em Configurações.`,
+      )
+      return
+    }
 
     if (mudouOHorario && remarcacoesFeitas >= limite) {
       mostrarAviso(
@@ -131,6 +143,18 @@ export function FormularioAgendamento({ modo = 'agendamento', agendamento, dataS
     }
 
     aoConcluir()
+  }
+
+  // A mensagem muda conforme o estado do sinal: cobrar, confirmar ou avisar da mudanca.
+  const avisarNoWhatsapp = () => {
+    const dados = { agendamento: { ...formulario }, marca, sinal }
+    const modelo = mudouOHorario
+      ? MODELOS.remarcacao
+      : formulario.situacao === 'Aguardando'
+        ? MODELOS.cobranca
+        : MODELOS.confirmacao
+
+    abrirWhatsapp({ telefone: formulario.telefone, mensagem: modelo(dados) })
   }
 
   const excluir = () => {
@@ -235,6 +259,11 @@ export function FormularioAgendamento({ modo = 'agendamento', agendamento, dataS
           )}
 
           <div className="modal-actions">
+            {editando && !confirmandoExclusao && !bloqueio && formulario.telefone && (
+              <button type="button" className="btn secondary" onClick={avisarNoWhatsapp}>
+                Avisar no WhatsApp
+              </button>
+            )}
             {editando && !confirmandoExclusao && (
               <button type="button" className="btn secondary" onClick={() => definirConfirmandoExclusao(true)}>
                 Cancelar horário

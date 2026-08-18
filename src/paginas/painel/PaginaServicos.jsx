@@ -7,10 +7,14 @@ import { ConfirmarExclusao } from '../../componentes/interface/ConfirmarExclusao
 import { useAplicacao } from '../../ganchos/useAplicacao'
 import { formatarMoeda } from '../../utilitarios/formatadores'
 import { receitaPotencial, servicosMaisAgendados } from '../../utilitarios/metricas'
+import { dataDeHoje } from '../../utilitarios/datas'
+import { planoPorId, usoDoPlano } from '../../dados/planos'
 
 export function PaginaServicos() {
   const { servicos, agendamentos, definirServicos, configuracoes, mostrarAviso } = useAplicacao()
   const ranking = servicosMaisAgendados(agendamentos)
+  const plano = planoPorId(configuracoes.plano)
+  const uso = usoDoPlano({ plano, servicos, agendamentos, hoje: dataDeHoje() })
   const [busca, definirBusca] = useState('')
   const [filtro, definirFiltro] = useState('Todos')
   const [ordenado, definirOrdenado] = useState(false)
@@ -46,6 +50,10 @@ export function PaginaServicos() {
   }
 
   const duplicar = servico => {
+    if (uso.servicos.estourou) {
+      mostrarAviso(`O plano ${plano.nome} permite ${plano.limites.servicos} serviços.`)
+      return
+    }
     definirServicos(atual => [...atual, { ...servico, id: crypto.randomUUID(), nome: `${servico.nome} (cópia)` }])
     mostrarAviso('Serviço duplicado.')
   }
@@ -62,7 +70,18 @@ export function PaginaServicos() {
         etiqueta="Catálogo"
         titulo="Serviços"
         descricao="Controle preços, duração, sinal e disponibilidade na página pública."
-        acao={<button className="btn" onClick={() => definirModal({})}>+ Novo serviço</button>}
+        acao={
+          <button
+            className="btn"
+            onClick={() =>
+              uso.servicos.estourou
+                ? mostrarAviso(`O plano ${plano.nome} permite ${plano.limites.servicos} serviços. Suba de plano em Configurações.`)
+                : definirModal({})
+            }
+          >
+            + Novo serviço
+          </button>
+        }
       />
 
       <div className="service-summary">

@@ -13,6 +13,7 @@ import { useAplicacao } from '../../ganchos/useAplicacao'
 import { calcularSinal, regraDeSinal, rotuloDoSinal } from '../../utilitarios/valores'
 import { dataCurta, dataDeHoje, ehDiaDeAtendimento } from '../../utilitarios/datas'
 import { dentroDaJanela, horariosDisponiveis, periodoEmMinutos } from '../../utilitarios/regras'
+import { planoPorId, usoDoPlano } from '../../dados/planos'
 
 const SERVICO = 0
 const HORARIO = 1
@@ -66,6 +67,11 @@ export function PaginaAgendamento() {
     definirHorario(null)
   }
 
+  // O plano limita quantas reservas cabem no mes.
+  const plano = planoPorId(configuracoes.plano)
+  const uso = usoDoPlano({ plano, servicos, agendamentos, hoje })
+  const agendaCheia = uso.agendamentos.estourou
+
   // Registra a reserva no painel: vira agendamento e, se for nova, tambem cliente.
   const confirmar = () => {
     definirAgendamentos(atual => [...atual, {
@@ -117,6 +123,7 @@ export function PaginaAgendamento() {
               <EtapaServico
                 servicos={publicados}
                 servicoEscolhido={servico}
+                agendaCheia={agendaCheia}
                 aoEscolher={escolhido => definirServicoId(escolhido.id)}
                 aoAvancar={() => definirEtapa(HORARIO)}
               />
