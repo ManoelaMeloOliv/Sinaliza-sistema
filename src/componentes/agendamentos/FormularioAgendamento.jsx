@@ -157,9 +157,29 @@ export function FormularioAgendamento({ modo = 'agendamento', agendamento, dataS
     abrirWhatsapp({ telefone: formulario.telefone, mensagem: modelo(dados) })
   }
 
+  // Bloqueio some. Agendamento vira 'Cancelado' e guarda se o sinal ficou retido,
+  // porque isso alimenta o relatorio de quanto a loja recuperou.
   const excluir = () => {
-    definirAgendamentos(atual => atual.filter(item => item.id !== agendamento.id))
-    mostrarAviso(bloqueio ? 'Bloqueio removido.' : `Agendamento de ${agendamento.cliente} cancelado.`)
+    if (bloqueio) {
+      definirAgendamentos(atual => atual.filter(item => item.id !== agendamento.id))
+      mostrarAviso('Bloqueio removido.')
+      aoConcluir()
+      return
+    }
+
+    definirAgendamentos(atual =>
+      atual.map(item =>
+        item.id === agendamento.id
+          ? { ...item, situacao: 'Cancelado', sinalRetido: agendamento.situacao === 'Pago' }
+          : item,
+      ),
+    )
+
+    mostrarAviso(
+      agendamento.situacao === 'Pago'
+        ? `Horário de ${agendamento.cliente} cancelado. O sinal fica retido.`
+        : `Horário de ${agendamento.cliente} cancelado.`,
+    )
     aoConcluir()
   }
 

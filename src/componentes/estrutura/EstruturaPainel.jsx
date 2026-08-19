@@ -4,6 +4,8 @@ import { BarraLateral } from './BarraLateral'
 import { BarraSuperior } from './BarraSuperior'
 import { Aviso } from '../interface/Aviso'
 import { useTema } from '../../ganchos/useTema'
+import { useTutorial } from '../../ganchos/useTutorial'
+import { Tutorial } from '../interface/Tutorial'
 import { useArmazenamentoLocal } from '../../ganchos/useArmazenamentoLocal'
 
 const LARGURA_MOBILE = 760
@@ -13,6 +15,7 @@ export function EstruturaPainel() {
   const [menuAberto, definirMenuAberto] = useState(false)
   const [recolhida, definirRecolhida] = useArmazenamentoLocal('sinaliza-barra-lateral', false)
   const { tema, alternarTema } = useTema()
+  const tutorial = useTutorial()
 
   const alternarMenu = () => {
     if (window.innerWidth <= LARGURA_MOBILE) definirMenuAberto(valor => !valor)
@@ -44,6 +47,8 @@ export function EstruturaPainel() {
       </div>
 
       <Aviso />
+
+      {tutorial.mostrando && <Tutorial aoFechar={tutorial.fechar} />}
     </>
   )
 }

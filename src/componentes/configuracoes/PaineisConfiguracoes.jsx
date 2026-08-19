@@ -1,6 +1,7 @@
 import { Campo } from '../interface/Campo'
 import { Interruptor } from '../interface/Interruptor'
 import { useAplicacao } from '../../ganchos/useAplicacao'
+import { useTutorial } from '../../ganchos/useTutorial'
 import { EditorExpediente } from './EditorExpediente'
 import { SINAL_FIXO, TIPOS_DE_SINAL } from '../../utilitarios/valores'
 
@@ -18,7 +19,8 @@ function LinhaDeControle({ titulo, detalhe, children }) {
 }
 
 export function PainelPerfil() {
-  const { perfil, definirPerfil } = useAplicacao()
+  const { perfil, definirPerfil, mostrarAviso } = useAplicacao()
+  const tutorial = useTutorial()
   const alterar = campo => evento =>
     definirPerfil(atual => ({ ...atual, [campo]: evento.target.value }))
 
@@ -58,6 +60,24 @@ export function PainelPerfil() {
             </select>
           </Campo>
         </div>
+      </article>
+
+      <article className="card">
+        <div className="card-title"><h2>Primeiros passos</h2></div>
+        <LinhaDeControle
+          titulo="Rever o tutorial"
+          detalhe="Mostra de novo o passo a passo de como usar o painel."
+        >
+          <button
+            className="small-btn"
+            onClick={() => {
+              tutorial.verDeNovo()
+              mostrarAviso('O tutorial vai começar. Volte para a Visão geral.')
+            }}
+          >
+            Ver tutorial
+          </button>
+        </LinhaDeControle>
       </article>
     </>
   )

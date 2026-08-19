@@ -1165,3 +1165,67 @@
   height: 13px;
   stroke-width: 2.6;
 }
+
+/* Aviso de recusa: mesmo formato do aviso normal, em vermelho. */
+.pagina-publica .notice.notice-erro {
+  background: #ffe9e7;
+  color: #8d332b;
+}
+
+/* --- Lista de espera na pagina publica ---------------------------------- */
+
+.pagina-publica .espera-convite {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+}
+
+.pagina-publica .espera-convite b {
+  display: block;
+  font-size: 12px;
+}
+
+.pagina-publica .espera-convite small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+.pagina-publica .espera-formulario {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--soft);
+}
+
+.pagina-publica .espera-formulario > b {
+  font-size: 12px;
+}
+
+.pagina-publica .espera-qualquer-dia {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.pagina-publica .espera-qualquer-dia input {
+  width: 16px;
+  height: 16px;
+}
+
+.pagina-publica .notice.espera-pronto {
+  margin-top: 16px;
+  background: #e4f7ef;
+  color: #0b6b4a;
+}

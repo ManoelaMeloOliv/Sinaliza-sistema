@@ -3,6 +3,7 @@ import {
   agendamentosIniciais,
   clientesIniciais,
   configuracoesIniciais,
+  listaDeEsperaInicial,
   marcaInicial,
   migrarAgendamentos,
   perfilInicial,
@@ -15,6 +16,7 @@ export function ProvedorAplicacao({ children }) {
   const [servicos, definirServicos] = useArmazenamentoLocal('sinaliza-servicos', servicosIniciais)
   const [agendamentos, definirAgendamentos] = useArmazenamentoLocal('sinaliza-agendamentos', agendamentosIniciais, migrarAgendamentos)
   const [clientes, definirClientes] = useArmazenamentoLocal('sinaliza-clientes', clientesIniciais)
+  const [listaDeEspera, definirListaDeEspera] = useArmazenamentoLocal('sinaliza-lista-de-espera', listaDeEsperaInicial)
   const [marca, definirMarca] = useArmazenamentoLocal('sinaliza-marca', marcaInicial)
   const [perfil, definirPerfil] = useArmazenamentoLocal('sinaliza-perfil', perfilInicial)
   const [configuracoes, definirConfiguracoes] = useArmazenamentoLocal('sinaliza-configuracoes', configuracoesIniciais)
@@ -32,6 +34,7 @@ export function ProvedorAplicacao({ children }) {
     servicos, definirServicos,
     agendamentos, definirAgendamentos,
     clientes, definirClientes,
+    listaDeEspera, definirListaDeEspera,
     marca, definirMarca,
     perfil, definirPerfil,
     configuracoes, definirConfiguracoes,

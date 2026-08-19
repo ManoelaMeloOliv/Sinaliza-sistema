@@ -13,7 +13,9 @@ import { useAplicacao } from '../../ganchos/useAplicacao'
 import { calcularSinal, regraDeSinal, rotuloDoSinal } from '../../utilitarios/valores'
 import { dataCurta, dataDeHoje, ehDiaDeAtendimento } from '../../utilitarios/datas'
 import { dentroDaJanela, horariosDisponiveis, periodoEmMinutos } from '../../utilitarios/regras'
-import { planoPorId, usoDoPlano } from '../../dados/planos'
+import { planoInclui, planoPorId, usoDoPlano } from '../../dados/planos'
+import { EntrarNaEspera } from '../../componentes/paginaPublica/EntrarNaEspera'
+import { novaEntrada } from '../../utilitarios/listaDeEspera'
 
 const SERVICO = 0
 const HORARIO = 1
@@ -23,7 +25,7 @@ const PIX = 4
 const CONFIRMACAO = 5
 
 export function PaginaAgendamento() {
-  const { servicos, agendamentos, marca, perfil, configuracoes, definirAgendamentos, definirClientes } = useAplicacao()
+  const { servicos, agendamentos, clientes, marca, perfil, configuracoes, definirAgendamentos, definirClientes, definirListaDeEspera } = useAplicacao()
   const publicados = servicos.filter(servico => servico.publicado)
 
   const [etapa, definirEtapa] = useState(SERVICO)
@@ -67,10 +69,24 @@ export function PaginaAgendamento() {
     definirHorario(null)
   }
 
+  const soDigitos = valor => String(valor ?? '').replace(/\D/g, '')
+  const bloqueada = clientes.some(
+    cliente =>
+      cliente.situacao === 'Bloqueada' &&
+      soDigitos(cliente.telefone) === soDigitos(dados.telefone) &&
+      soDigitos(dados.telefone).length >= 8,
+  )
+
   // O plano limita quantas reservas cabem no mes.
   const plano = planoPorId(configuracoes.plano)
   const uso = usoDoPlano({ plano, servicos, agendamentos, hoje })
   const agendaCheia = uso.agendamentos.estourou
+
+  // A lista de espera e um recurso do plano Studio.
+  const temListaDeEspera = planoInclui(plano, 'listaDeEspera')
+
+  const entrarNaEspera = pedido =>
+    definirListaDeEspera(atual => [...atual, novaEntrada(pedido)])
 
   // Registra a reserva no painel: vira agendamento e, se for nova, tambem cliente.
   const confirmar = () => {
@@ -137,6 +153,11 @@ export function PaginaAgendamento() {
                 podeEscolher={podeEscolher}
                 aoEscolherData={escolherData}
                 aoEscolherHorario={definirHorario}
+                espera={
+                  temListaDeEspera && data && servico
+                    ? <EntrarNaEspera data={data} servico={servico} aoEntrar={entrarNaEspera} />
+                    : null
+                }
                 aoVoltar={() => definirEtapa(SERVICO)}
                 aoAvancar={() => definirEtapa(DADOS)}
               />
@@ -145,6 +166,7 @@ export function PaginaAgendamento() {
             {etapaVisivel === DADOS && (
               <EtapaDados
                 dados={dados}
+                bloqueada={bloqueada}
                 aoMudar={alteracao => definirDados(atual => ({ ...atual, ...alteracao }))}
                 aoVoltar={() => definirEtapa(HORARIO)}
                 aoAvancar={() => definirEtapa(REVISAO)}

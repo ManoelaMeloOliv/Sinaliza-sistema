@@ -1,0 +1,137 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --color-marca: #6938ef;
+  --color-marca-escura: #5527d6;
+  --color-tinta: #201c29;
+  --color-fundo: #f5f4f9;
+  --color-borda: #e6e2eb;
+  --color-suave: #746e80;
+}
+
+@layer base {
+  body { @apply m-0 bg-fundo font-sans text-tinta antialiased; }
+  button { @apply cursor-pointer disabled:cursor-not-allowed disabled:opacity-45; }
+  input, select { @apply h-10.5 rounded-lg border border-borda bg-white px-3 text-inherit outline-none focus:border-marca focus:ring-2 focus:ring-marca/15; }
+  label { @apply grid gap-1.5 text-xs font-bold; }
+  h1 { @apply mb-1.5 text-[26px] font-bold; }
+  h2 { @apply text-base font-bold; }
+  small { @apply text-suave; }
+  table { @apply w-full border-collapse text-left; }
+  th { @apply text-[11px] text-suave; }
+  th, td { @apply whitespace-nowrap border-b border-borda px-3 py-3; }
+}
+
+@layer components {
+  .button { @apply inline-flex items-center justify-center gap-2 rounded-lg border-0 bg-marca px-4 py-2.5 font-bold text-white no-underline transition hover:bg-marca-escura; }
+  .button.secondary { @apply border border-borda bg-white text-tinta hover:bg-gray-50; }
+  .icon-button { @apply grid size-10 place-items-center rounded-lg border border-borda bg-white text-inherit hover:border-marca hover:text-marca; }
+  .icon-button svg { @apply size-[18px]; }
+  .icon-button.danger { @apply text-red-600; }
+  .app-shell { @apply grid min-h-screen grid-cols-[238px_1fr] bg-fundo text-tinta; --card:#fff; --line:#e6e2eb; --muted:#746e80; }
+  .app-shell[data-theme=dark] { @apply bg-[#11131a] text-[#f4f1fa]; --card:#1b1e28; --line:#30333e; --muted:#aaa4b5; }
+  .sidebar { @apply sticky top-0 flex h-screen flex-col bg-[#171420] px-4 py-6 text-[#bcb6c8]; }
+  .brand-mark { @apply px-3 pb-7 text-[21px] font-bold text-white; }
+  .sidebar nav { @apply grid gap-1; }
+  .sidebar nav a { @apply flex items-center gap-3 rounded-lg p-3 text-inherit no-underline hover:bg-marca/20 hover:text-white; }
+  .sidebar nav a.active { @apply bg-marca/20 text-white; }
+  .profile { @apply mt-auto flex items-center gap-2.5 border-t border-white/10 px-2 pt-4; }
+  .profile > span { @apply grid size-9 place-items-center rounded-lg bg-marca font-bold text-white; }
+  .profile small, .list-row small { @apply mt-1 block; }
+  .workspace { @apply min-w-0; }
+  .topbar { @apply sticky top-0 z-10 flex h-[70px] items-center justify-between border-b px-7 backdrop-blur; border-color:var(--line); background:color-mix(in srgb,var(--card) 90%,transparent); }
+  .top-actions { @apply flex items-center gap-2; }
+  .public-link { @apply text-xs font-bold text-marca no-underline; }
+  .content { @apply mx-auto max-w-[1400px] px-7.5 pb-12 pt-7; }
+  .page-header { @apply mb-6 flex items-end justify-between gap-5; }
+  .page-header small { @apply font-bold uppercase; }
+  .page-header p { color:var(--muted); @apply m-0; }
+  .card { background:var(--card); border-color:var(--line); @apply rounded-lg border p-[18px]; }
+  .stats { @apply mb-4 grid grid-cols-4 gap-3.5; }
+  .stat-card span, .stat-card small { color:var(--muted); @apply block; }
+  .stat-card strong { @apply my-3 block text-2xl; }
+  .dashboard-grid { @apply grid grid-cols-[1.4fr_.6fr] gap-4; }
+  .list-row { border-color:var(--line); @apply flex items-center justify-between gap-3.5 border-b py-3; }
+  .toolbar, .card-title, .inline-create { @apply mb-4 flex items-center justify-between gap-3; }
+  .toolbar h2, .card-title h2 { @apply m-0; }
+  .table-wrap { @apply overflow-auto; }
+  .tag { @apply inline-block rounded-full px-2 py-1 text-[10px] font-bold; }
+  .tag.success { @apply bg-emerald-100 text-emerald-700; }
+  .tag.warning { @apply bg-amber-100 text-amber-700; }
+  .modal-backdrop { @apply fixed inset-0 z-30 grid place-items-center bg-[#0c0913]/70 p-4; }
+  .modal { background:var(--card); @apply w-full max-w-[620px] rounded-lg p-5.5; }
+  .modal > header { @apply flex items-center justify-between; }
+  .modal > header h2 { @apply m-0; }
+  .form-grid { @apply mt-5 grid grid-cols-2 gap-3.5; }
+  .form-grid input, .form-grid select, .edit-row input { @apply w-full; }
+  .form-grid footer { @apply col-span-full mt-2 flex justify-end gap-2; }
+  .item-grid { @apply grid grid-cols-3 gap-3.5; }
+  .inline-create { @apply justify-start; }
+  .inline-create input { @apply w-full max-w-[360px]; }
+  .edit-row { @apply grid grid-cols-2 gap-3; }
+  .switch input { @apply hidden; }
+  .switch span { @apply block h-[23px] w-10 rounded-full bg-gray-300 p-[3px]; }
+  .switch span::after { content:""; @apply block size-[17px] rounded-full bg-white transition; }
+  .switch input:checked + span { @apply bg-marca; }
+  .switch input:checked + span::after { @apply translate-x-[17px]; }
+  .settings-form { @apply grid max-w-[720px] gap-4; }
+  .settings-form > .button { @apply justify-self-start; }
+  .search-input { @apply w-full max-w-[350px]; }
+  .booking-page { @apply min-h-screen bg-[#f6f5fa] text-tinta; --primary:var(--public-primary,#6938ef); }
+  .booking-hero { @apply text-white; }
+  .booking-hero > div { @apply relative mx-auto flex max-w-[1120px] items-center gap-4 px-6 py-7; }
+  .booking-avatar { color:var(--primary); @apply grid size-[58px] place-items-center rounded-lg bg-white text-xl font-bold; }
+  .booking-hero h1 { @apply m-0; }
+  .booking-hero p { @apply my-1 opacity-85; }
+  .booking-hero small { @apply flex items-center gap-1 text-white; }
+  .back-link { @apply absolute right-6 top-6 flex gap-1 text-white no-underline; }
+  .booking-shell { @apply mx-auto my-6 grid max-w-[1120px] grid-cols-[1fr_320px] gap-[18px] px-6; }
+  .booking-main, .booking-summary { @apply rounded-lg border border-borda bg-white p-5.5; }
+  .booking-summary { @apply sticky top-5 self-start; }
+  .steps { @apply grid grid-cols-4 border-b border-borda pb-5.5; }
+  .steps span { @apply flex items-center gap-2 text-[11px] text-suave; }
+  .steps i { @apply grid size-6 place-items-center rounded-full bg-[#eeeaf2] not-italic; }
+  .steps span.active { color:var(--primary); @apply font-bold; }
+  .steps span.active i { background:var(--primary); @apply text-white; }
+  .booking-step { @apply pt-6; }
+  .choice-list { @apply grid gap-2; }
+  .choice { @apply flex items-center justify-between rounded-lg border border-borda bg-white p-4 text-left; }
+  .choice small { @apply mt-1 block; }
+  .choice.selected, .slots button.selected { border-color:var(--primary); box-shadow:0 0 0 2px color-mix(in srgb,var(--primary) 18%,transparent); }
+  .booking-step > label { @apply mb-4; }
+  .booking-step > label input { @apply w-full; }
+  .slots { @apply grid grid-cols-5 gap-2; }
+  .slots button { @apply h-10 rounded-lg border border-borda bg-white; }
+  .step-actions { @apply mt-6 flex justify-end gap-2; }
+  .pix-box { @apply grid gap-2.5 rounded-lg border border-borda bg-[#f6f5fa] p-[18px]; }
+  .pix-box strong { @apply text-2xl; }
+  .pix-box code { @apply overflow-hidden bg-white p-3; }
+  .success-panel { @apply px-5 py-15 text-center; }
+  .success-panel > span { @apply mx-auto mb-[18px] grid size-16 place-items-center rounded-full bg-emerald-100 text-emerald-700; }
+  .success-panel p { @apply mx-auto mb-5.5 max-w-[480px] text-suave; }
+}
+
+@media (max-width: 950px) {
+  .stats { @apply grid-cols-2; }
+  .dashboard-grid, .booking-shell { @apply grid-cols-1; }
+  .item-grid { @apply grid-cols-2; }
+  .booking-summary { @apply static; }
+}
+@media (max-width: 700px) {
+  .app-shell { @apply grid-cols-1; }
+  .sidebar { @apply fixed z-20 w-[238px] -translate-x-full transition; }
+  .sidebar.open { @apply translate-x-0; }
+  .content { @apply px-4 py-5.5; }
+  .topbar { @apply px-4; }
+  .page-header { @apply flex-col items-start; }
+  .stats, .item-grid { @apply grid-cols-1; }
+  .form-grid, .edit-row { @apply grid-cols-1; }
+  .form-grid footer { @apply col-auto; }
+  .booking-hero > div { @apply pt-[58px]; }
+  .back-link { @apply left-6 right-auto; }
+  .booking-shell { @apply px-3; }
+  .steps span { @apply text-[0]; }
+  .slots { @apply grid-cols-3; }
+}

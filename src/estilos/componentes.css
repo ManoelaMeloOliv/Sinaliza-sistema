@@ -218,20 +218,28 @@
   background: #0d0b14aa;
   z-index: 30;
   display: none;
-  place-items: center;
   padding: 18px;
+  overflow-y: auto;
 }
 
+/* Flex sem align-items, com "margin: auto" na caixa: ela fica centrada quando
+   cabe e encosta no topo quando e maior que a tela, sempre rolavel. Grid com
+   place-items:center cortava o cabecalho sem deixar rolar ate ele. */
 .modal.open {
-  display: grid;
+  display: flex;
+  justify-content: center;
 }
 
 .modal-box {
   width: min(560px,100%);
+  max-height: calc(100vh - 36px);
+  max-height: calc(100dvh - 36px); /* dvh desconta a barra do navegador no celular */
+  overflow-y: auto;
   background: var(--card);
   border-radius: 19px;
   padding: 23px;
   box-shadow: 0 30px 80px #0005;
+  margin: auto;
 }
 
 .modal-head {
@@ -382,6 +390,19 @@
   width: min(720px,100%);
   padding: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* So o miolo rola: os botoes de salvar e cancelar ficam sempre visiveis. */
+.modal-box.booking-modern .booking-modal-body {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-box.booking-modern .booking-modal-head,
+.modal-box.booking-modern .booking-modal-footer {
+  flex: none;
 }
 
 .modal-head-close {
@@ -450,3 +471,30 @@
 
 .stat-icon svg { width: 19px; height: 19px; }
 .activity-dot svg { width: 15px; height: 15px; }
+
+/* No celular o modal ocupa quase tudo e ganha respiro menor nas bordas. */
+@media (max-width: 640px) {
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-box {
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
+    padding: 18px;
+    border-radius: 15px;
+  }
+
+  .modal-box.booking-modern {
+    padding: 0;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions .btn,
+  .modal-actions .small-btn {
+    width: 100%;
+  }
+}

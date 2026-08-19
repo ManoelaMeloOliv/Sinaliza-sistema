@@ -11,6 +11,7 @@ export const PLANOS = [
     observacao: 'Pra sempre, sem cartão',
     rotuloDoBotao: 'Começar de graça',
     limites: { servicos: 3, agendamentosPorMes: 30 },
+    liberado: [],
     recursos: [
       'Página de agendamento personalizada',
       'Agenda do dia e da semana',
@@ -28,6 +29,7 @@ export const PLANOS = [
     rotuloDoBotao: 'Testar 14 dias grátis',
     destaque: 'Mais escolhido',
     limites: { servicos: Infinity, agendamentosPorMes: Infinity },
+    liberado: ['bloquearClientes'],
     recursos: [
       'Tudo do Free, sem limite de agendamentos',
       'Sinal no Pix com confirmação automática, 24h por dia',
@@ -45,6 +47,7 @@ export const PLANOS = [
     observacao: 'Ou R$ 899 no ano — 2 meses grátis',
     rotuloDoBotao: 'Testar 14 dias grátis',
     limites: { servicos: Infinity, agendamentosPorMes: Infinity },
+    liberado: ['bloquearClientes', 'listaDeEspera', 'relatorioMensal'],
     recursos: [
       'Tudo do Pro',
       'Lista de espera automática',
@@ -74,4 +77,18 @@ export function usoDoPlano({ plano, servicos, agendamentos, hoje }) {
     servicos: medir(servicos.length, plano.limites.servicos),
     agendamentos: medir(doMes.length, plano.limites.agendamentosPorMes),
   }
+}
+
+// Nomes amigaveis para explicar o que falta quando o recurso e de outro plano.
+export const RECURSOS = {
+  bloquearClientes: { nome: 'Bloquear clientes', plano: 'Pro' },
+  listaDeEspera: { nome: 'Lista de espera', plano: 'Studio' },
+  relatorioMensal: { nome: 'Relatório mensal', plano: 'Studio' },
+}
+
+export const planoInclui = (plano, recurso) => (plano.liberado ?? []).includes(recurso)
+
+// Qual e o plano mais barato que tem esse recurso.
+export function planoQueInclui(recurso) {
+  return PLANOS.find(plano => (plano.liberado ?? []).includes(recurso))
 }

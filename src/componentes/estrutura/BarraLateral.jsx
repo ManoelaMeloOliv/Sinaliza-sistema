@@ -7,6 +7,7 @@ import { useAplicacao } from '../../ganchos/useAplicacao'
 const ATALHOS = [
   { caminho: '', icone: 'inicio', rotulo: 'Visão geral' },
   { caminho: 'agenda', icone: 'agenda', rotulo: 'Agenda' },
+  { caminho: 'espera', icone: 'espera', rotulo: 'Lista de espera' },
   { caminho: 'servicos', icone: 'servicos', rotulo: 'Serviços' },
   { caminho: 'clientes', icone: 'clientes', rotulo: 'Clientes' },
   { caminho: 'financeiro', icone: 'financeiro', rotulo: 'Financeiro' },
@@ -20,7 +21,7 @@ export function BarraLateral({ aberta, aoNavegar }) {
     <aside className={aberta ? 'sidebar open' : 'sidebar'}>
       <Logo variante="clara" />
 
-      <nav className="nav">
+      <nav className="nav" data-tutorial="menu">
         {ATALHOS.map(atalho => (
           <NavLink
             key={atalho.rotulo}

@@ -6,6 +6,7 @@ const CAMINHOS = {
   // Menu lateral
   inicio: <><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v10h13V10M9 20v-6h6v6" /></>,
   agenda: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M8 3v4M16 3v4M3 10h18" /></>,
+  espera: <><path d="M7 3h10M7 21h10" /><path d="M8 3v3.5a4 4 0 0 0 1.6 3.2L12 12l2.4-2.3A4 4 0 0 0 16 6.5V3" /><path d="M8 21v-3.5a4 4 0 0 1 1.6-3.2L12 12l2.4 2.3a4 4 0 0 1 1.6 3.2V21" /></>,
   servicos: <><path d="M12 3v18M3 12h18" /><circle cx="12" cy="12" r="8" /></>,
   clientes: <><circle cx="9" cy="8" r="4" /><path d="M2.5 21a6.5 6.5 0 0 1 13 0M16 11a4 4 0 0 1 5.5 3.7M17 21a5 5 0 0 1 4.5-5" /></>,
   financeiro: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 9h18M16 14h2" /></>,

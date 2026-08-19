@@ -1704,3 +1704,200 @@ a.small-btn {
     align-items: stretch;
   }
 }
+
+/* --- Lista de espera ----------------------------------------------------- */
+
+.destaque-vaga {
+  border-color: var(--p);
+  box-shadow: 0 0 0 3px #6938ef12;
+}
+
+.recurso-bloqueado {
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.recurso-bloqueado h2 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.recurso-bloqueado p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: 52ch;
+  margin: 0 auto 20px;
+}
+
+.recurso-bloqueado .btn {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.table-action.perigo {
+  color: #bf4037;
+}
+
+/* --- Quanto voce recuperou ---------------------------------------------- */
+
+.recuperado {
+  margin-bottom: 16px;
+}
+
+.recuperado.bloqueado {
+  border-style: dashed;
+}
+
+.recuperado-total {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.recuperado-total strong {
+  font-size: 32px;
+  color: var(--green);
+}
+
+.recuperado-total > div {
+  display: grid;
+  gap: 4px;
+}
+
+.recuperado-total span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* --- Tutorial de boas-vindas -------------------------------------------- */
+
+.tutorial {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+/* A sombra enorme escurece a tela inteira menos o buraco do destaque. */
+.tutorial-foco {
+  position: fixed;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px #0d0b14b8;
+  transition: top .25s, left .25s, width .25s, height .25s;
+  pointer-events: none;
+}
+
+.tutorial-fundo {
+  position: fixed;
+  inset: 0;
+  background: #0d0b14b8;
+}
+
+.tutorial-balao {
+  position: fixed;
+  width: 320px;
+  max-width: calc(100vw - 20px);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 15px;
+  padding: 18px;
+  box-shadow: 0 24px 60px #0006;
+  pointer-events: auto;
+  transition: top .25s, left .25s;
+}
+
+.tutorial-balao.centralizado {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+}
+
+.tutorial-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tutorial-topo span {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.tutorial-topo button {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tutorial-topo button:hover {
+  color: var(--p);
+}
+
+.tutorial-balao h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.tutorial-balao p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.tutorial-pontos {
+  display: flex;
+  gap: 5px;
+  margin: 16px 0 14px;
+}
+
+.tutorial-pontos i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.tutorial-pontos i.atual {
+  background: var(--p);
+  width: 18px;
+  border-radius: 99px;
+}
+
+.tutorial-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.tutorial-acoes .btn {
+  padding: 9px 14px;
+  font-size: 12px;
+}
+
+@media (max-width: 640px) {
+  .tutorial-balao,
+  .tutorial-balao.centralizado {
+    width: auto;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+  }
+
+  .tutorial-balao.centralizado {
+    transform: translateY(-50%);
+    left: 10px;
+  }
+}

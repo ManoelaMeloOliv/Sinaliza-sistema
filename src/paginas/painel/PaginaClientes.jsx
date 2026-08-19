@@ -8,9 +8,12 @@ import { useAplicacao } from '../../ganchos/useAplicacao'
 import { iniciais } from '../../utilitarios/formatadores'
 import { baixarCsv } from '../../utilitarios/csv'
 import { resumoDeClientes } from '../../utilitarios/metricas'
+import { planoInclui, planoPorId, planoQueInclui } from '../../dados/planos'
 
 export function PaginaClientes() {
-  const { clientes, agendamentos, definirClientes, mostrarAviso } = useAplicacao()
+  const { clientes, agendamentos, configuracoes, definirClientes, mostrarAviso } = useAplicacao()
+  const plano = planoPorId(configuracoes.plano)
+  const podeBloquear = planoInclui(plano, 'bloquearClientes')
   const resumo = resumoDeClientes(clientes, agendamentos)
   const [busca, definirBusca] = useState('')
   const [situacao, definirSituacao] = useState('')
@@ -28,6 +31,22 @@ export function PaginaClientes() {
       ...visiveis.map(c => [c.nome, c.telefone, c.ultimoServico, c.agendamentos, c.situacao]),
     ])
     mostrarAviso(`${visiveis.length} cliente(s) baixado(s). Abra o arquivo no Excel.`)
+  }
+
+  const alternarBloqueio = cliente => {
+    if (!podeBloquear) {
+      mostrarAviso(`Bloquear clientes faz parte do plano ${planoQueInclui("bloquearClientes").nome}.`)
+      return
+    }
+    const bloqueada = cliente.situacao === 'Bloqueada'
+    definirClientes(atual =>
+      atual.map(item =>
+        item.id === cliente.id ? { ...item, situacao: bloqueada ? 'Ativa' : 'Bloqueada' } : item,
+      ),
+    )
+    mostrarAviso(bloqueada
+      ? `${cliente.nome} foi desbloqueada.`
+      : `${cliente.nome} não conseguirá mais agendar pela página pública.`)
   }
 
   const salvar = dados => {
@@ -71,6 +90,7 @@ export function PaginaClientes() {
               <option value="">Todas as situações</option>
               <option>Ativa</option>
               <option>Pendente</option>
+              <option>Bloqueada</option>
             </select>
             <button className="small-btn" onClick={exportar}>Baixar lista</button>
           </div>
@@ -110,6 +130,12 @@ export function PaginaClientes() {
                       onClick={() => definirHistorico(cliente)}
                     >
                       Ver histórico
+                    </button>
+                    <button
+                      className={cliente.situacao === 'Bloqueada' ? 'table-action' : 'table-action perigo'}
+                      onClick={() => alternarBloqueio(cliente)}
+                    >
+                      {cliente.situacao === 'Bloqueada' ? 'Desbloquear' : 'Bloquear'}
                     </button>
                   </td>
                 </tr>

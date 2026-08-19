@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { EstruturaPainel } from './componentes/estrutura/EstruturaPainel'
 import { PaginaInicial } from './paginas/painel/PaginaInicial'
 import { PaginaAgenda } from './paginas/painel/PaginaAgenda'
+import { PaginaListaDeEspera } from './paginas/painel/PaginaListaDeEspera'
 import { PaginaServicos } from './paginas/painel/PaginaServicos'
 import { PaginaClientes } from './paginas/painel/PaginaClientes'
 import { PaginaFinanceiro } from './paginas/painel/PaginaFinanceiro'
@@ -14,6 +15,7 @@ export function Aplicacao() {
     <Route path="/painel" element={<EstruturaPainel />}>
       <Route index element={<PaginaInicial />} />
       <Route path="agenda" element={<PaginaAgenda />} />
+      <Route path="espera" element={<PaginaListaDeEspera />} />
       <Route path="servicos" element={<PaginaServicos />} />
       <Route path="clientes" element={<PaginaClientes />} />
       <Route path="financeiro" element={<PaginaFinanceiro />} />

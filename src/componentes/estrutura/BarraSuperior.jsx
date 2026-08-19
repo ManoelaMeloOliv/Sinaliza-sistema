@@ -38,13 +38,14 @@ export function BarraSuperior({ tema, aoAlternarTema, aoAlternarMenu, menuExpand
         </button>
         <input
           className="search"
+          data-tutorial="busca"
           onKeyDown={buscar}
           placeholder="Buscar cliente, serviço ou horário..."
         />
       </div>
 
       <div className="top-actions">
-        <Link className="btn secondary" to="/agendamento" style={{ textDecoration: 'none', padding: '9px 12px' }}>
+        <Link className="btn secondary" data-tutorial="pagina-publica" to="/agendamento" style={{ textDecoration: 'none', padding: '9px 12px' }}>
           Ver página pública
         </Link>
         <button className="icon-btn" onClick={aoAlternarTema} title="Alternar tema" aria-label="Alternar tema">

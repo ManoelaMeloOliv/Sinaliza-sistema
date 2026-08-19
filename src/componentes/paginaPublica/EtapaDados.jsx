@@ -1,6 +1,7 @@
-export function EtapaDados({ dados, aoMudar, aoVoltar, aoAvancar }) {
+export function EtapaDados({ dados, bloqueada, aoMudar, aoVoltar, aoAvancar }) {
   const enviar = evento => {
     evento.preventDefault()
+    if (bloqueada) return
     aoAvancar()
   }
 
@@ -41,6 +42,15 @@ export function EtapaDados({ dados, aoMudar, aoVoltar, aoAvancar }) {
           />
         </div>
 
+        {bloqueada && (
+          <div className="notice notice-erro">
+            <b>!</b>
+            <span>
+              Não foi possível seguir com este número. Entre em contato direto para agendar.
+            </span>
+          </div>
+        )}
+
         <div className="notice">
           <b>♢</b>
           <span>
@@ -50,7 +60,7 @@ export function EtapaDados({ dados, aoMudar, aoVoltar, aoAvancar }) {
 
         <div className="actions">
           <button type="button" className="btn back" onClick={aoVoltar}>Voltar</button>
-          <button className="btn">Revisar reserva</button>
+          <button className="btn" disabled={bloqueada}>Revisar reserva</button>
         </div>
       </form>
     </div>

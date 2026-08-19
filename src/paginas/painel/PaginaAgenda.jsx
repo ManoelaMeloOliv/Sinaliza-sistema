@@ -31,7 +31,10 @@ export function PaginaAgenda() {
   const dias = semanaDeTrabalho(referencia)
   const hoje = dataDeHoje()
 
-  const porSituacao = agendamentos.filter(item => !situacao || item.situacao === situacao)
+  // Cancelados viram historico: aparecem so na Lista, com o filtro certo.
+  const visiveis = agendamentos.filter(item => item.situacao !== 'Cancelado')
+  const porSituacao = (situacao === 'Cancelado' ? agendamentos : visiveis)
+    .filter(item => !situacao || item.situacao === situacao)
 
   // Cada visao mostra um recorte diferente do tempo.
   const doPeriodo = {
@@ -107,6 +110,7 @@ export function PaginaAgenda() {
             <option value="">Todos os status</option>
             <option value="Pago">Confirmados</option>
             <option value="Aguardando">Aguardando sinal</option>
+            <option value="Cancelado">Cancelados</option>
           </select>
 
           <div className="segmented">

@@ -9,8 +9,10 @@ import {
   composicaoDosRecebimentos,
   faturamentoDaSemana,
   movimentacoes,
+  quantoRecuperou,
   resumoFinanceiro,
 } from '../../utilitarios/metricas'
+import { planoInclui, planoPorId, planoQueInclui } from '../../dados/planos'
 
 const LINHAS_INICIAIS = 6
 
@@ -28,6 +30,11 @@ export function PaginaFinanceiro() {
   const composicao = composicaoDosRecebimentos(doMes, servicos, configuracoes)
   const semana = faturamentoDaSemana(agendamentos, servicos, hoje)
   const lancamentos = movimentacoes(doMes, servicos, configuracoes, hoje)
+
+  // "Quanto voce recuperou" e um recurso do plano Studio.
+  const plano = planoPorId(configuracoes.plano)
+  const temRelatorio = planoInclui(plano, 'relatorioMensal')
+  const recuperado = quantoRecuperou(agendamentos, servicos, configuracoes, mes.slice(0, 7))
 
   const linhas = extratoCompleto ? lancamentos : lancamentos.slice(0, LINHAS_INICIAIS)
   const totalDaComposicao = composicao.reduce((soma, item) => soma + item.valor, 0)
@@ -93,6 +100,53 @@ export function PaginaFinanceiro() {
           </div>
         </article>
       </div>
+
+      <article className={temRelatorio ? 'card recuperado' : 'card recuperado bloqueado'}>
+        <div className="card-title">
+          <h2>Quanto você recuperou</h2>
+          <span className="tag">{temRelatorio ? mesPorExtenso(mes) : planoQueInclui('relatorioMensal').nome}</span>
+        </div>
+
+        {temRelatorio ? (
+          <>
+            <p className="section-help">
+              Dinheiro que ia embora e voltou: horários preenchidos pela lista de espera e sinais
+              retidos de quem cancelou fora do prazo.
+            </p>
+
+            <div className="recuperado-total">
+              <strong>{formatarMoeda(recuperado.total)}</strong>
+              <div>
+                <span>{recuperado.horariosRecuperados} horário(s) preenchido(s) pela lista de espera</span>
+                <span>{recuperado.cancelamentosComSinalRetido} sinal(is) retido(s) de cancelamento</span>
+              </div>
+            </div>
+
+            {recuperado.detalhes.length > 0 && (
+              <div className="finance-breakdown" style={{ marginTop: 16 }}>
+                {recuperado.detalhes.map(item => (
+                  <div className="finance-item" key={item.id}>
+                    <span>{item.cliente} · {item.servico} · {dataCurta(item.data)}</span>
+                    <b>{formatarMoeda(item.valor)}</b>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {recuperado.total === 0 && (
+              <p className="empty">
+                Nada recuperado neste mês ainda. Quando alguém da lista de espera ocupar um horário,
+                o valor aparece aqui.
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="section-help">
+            Veja em reais quanto a lista de espera e os sinais retidos trouxeram de volta.
+            Disponível no plano {planoQueInclui('relatorioMensal').nome}.
+          </p>
+        )}
+      </article>
 
       <div className="finance-layout">
         <article className="card">

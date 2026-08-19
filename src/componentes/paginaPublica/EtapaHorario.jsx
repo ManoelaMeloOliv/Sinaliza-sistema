@@ -9,7 +9,7 @@ import {
   somarMeses,
 } from '../../utilitarios/datas'
 
-export function EtapaHorario({ data, horario, horarios, podeEscolher, aoEscolherData, aoEscolherHorario, aoVoltar, aoAvancar }) {
+export function EtapaHorario({ data, horario, horarios, podeEscolher, espera, aoEscolherData, aoEscolherHorario, aoVoltar, aoAvancar }) {
   const hoje = dataDeHoje()
   const [mes, definirMes] = useState(data ?? hoje)
 
@@ -57,7 +57,10 @@ export function EtapaHorario({ data, horario, horarios, podeEscolher, aoEscolher
           </p>
 
           {horarios.length === 0 ? (
-            <p className="empty">Não há horário livre neste dia para o serviço escolhido. Tente outra data.</p>
+            <>
+              <p className="empty">Não há horário livre neste dia para o serviço escolhido.</p>
+              {espera}
+            </>
           ) : (
             <div className="slots">
               {horarios.map(hora => (

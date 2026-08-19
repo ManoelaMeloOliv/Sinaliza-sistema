@@ -45,7 +45,7 @@ export function PaginaInicial() {
         acao={<button className="btn" onClick={() => definirModalAberto(true)}>+ Novo agendamento</button>}
       />
 
-      <div className="stats">
+      <div className="stats" data-tutorial="numeros">
         <CartaoIndicador
           rotulo="Faturamento no mês"
           icone="dinheiro"
@@ -88,7 +88,7 @@ export function PaginaInicial() {
           </div>
         </article>
 
-        <article className="card">
+        <article className="card" data-tutorial="agenda-de-hoje">
           <div className="card-title">
             <h2>Agenda de hoje</h2>
             <button onClick={() => irPara('/painel/agenda')}>Ver agenda</button>

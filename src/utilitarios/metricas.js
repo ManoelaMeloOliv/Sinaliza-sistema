@@ -8,6 +8,10 @@ import { duracaoEmMinutos, expedienteDoDia, horarioEmMinutos, PASSO_DA_GRADE } f
 const PAGO = 'Pago'
 
 export const ehBloqueio = agendamento => agendamento.servico === 'Bloqueio'
+export const ehCancelado = agendamento => agendamento.situacao === 'Cancelado'
+
+// O que de fato conta como atendimento: nem bloqueio, nem cancelado.
+const ehAtendimento = agendamento => !ehBloqueio(agendamento) && !ehCancelado(agendamento)
 
 function valorDoAgendamento(agendamento, servicos) {
   return agendamento.preco ?? precoDoServico(servicos, agendamento.servico)
@@ -23,7 +27,7 @@ const doMes = (agendamentos, mes) => agendamentos.filter(item => item.data.slice
 
 export function resumoDoMes(agendamentos, servicos, configuracoes, hoje = dataDeHoje()) {
   const mes = hoje.slice(0, 7)
-  const atendimentos = doMes(agendamentos, mes).filter(item => !ehBloqueio(item))
+  const atendimentos = doMes(agendamentos, mes).filter(ehAtendimento)
   const pagos = atendimentos.filter(item => item.situacao === PAGO)
 
   const faturamento = atendimentos.reduce((soma, item) => soma + valorDoAgendamento(item, servicos), 0)
@@ -51,7 +55,7 @@ export function faturamentoDaSemana(agendamentos, servicos, hoje = dataDeHoje())
   const valores = dias.map(data => ({
     data,
     total: agendamentos
-      .filter(item => item.data === data && !ehBloqueio(item))
+      .filter(item => item.data === data && ehAtendimento(item))
       .reduce((soma, item) => soma + valorDoAgendamento(item, servicos), 0),
   }))
 
@@ -79,7 +83,7 @@ export function ocupacaoDaSemana(agendamentos, servicos, hoje = dataDeHoje(), co
   })
 
   const ocupados = agendamentos
-    .filter(item => dias.includes(item.data))
+    .filter(item => dias.includes(item.data) && !ehCancelado(item))
     .reduce((soma, item) => {
       const servico = servicoPorNome(servicos, item.servico)
       return soma + Math.ceil(duracaoEmMinutos(servico?.duracao) / PASSO_DA_GRADE)
@@ -91,7 +95,7 @@ export function ocupacaoDaSemana(agendamentos, servicos, hoje = dataDeHoje(), co
 // Ranking dos servicos por quantidade de agendamentos, em percentual.
 export function servicosMaisAgendados(agendamentos, limite = 4) {
   const contagem = new Map()
-  agendamentos.filter(item => !ehBloqueio(item)).forEach(item => {
+  agendamentos.filter(ehAtendimento).forEach(item => {
     contagem.set(item.servico, (contagem.get(item.servico) ?? 0) + 1)
   })
 
@@ -177,7 +181,7 @@ export function movimentacoes(agendamentos, servicos, configuracoes, hoje = data
 }
 
 export function resumoFinanceiro(agendamentos, servicos, configuracoes, hoje = dataDeHoje()) {
-  const atendimentos = agendamentos.filter(item => !ehBloqueio(item))
+  const atendimentos = agendamentos.filter(ehAtendimento)
   const pagos = atendimentos.filter(item => item.situacao === PAGO)
 
   const recebido = pagos.reduce((soma, item) => soma + sinalDoAgendamento(item, servicos, configuracoes), 0)
@@ -213,4 +217,41 @@ export function composicaoDosRecebimentos(agendamentos, servicos, configuracoes)
   return [...porServico.entries()]
     .sort((a, b) => b[1] - a[1])
     .map(([nome, valor]) => ({ nome, valor }))
+}
+
+// --- quanto voce recuperou (plano Studio) -------------------------------
+
+/**
+ * Dinheiro que teria ido embora e voltou. Duas origens:
+ * - horarios preenchidos por quem estava na lista de espera;
+ * - sinais retidos de quem cancelou fora do prazo de reembolso.
+ */
+export function quantoRecuperou(agendamentos, servicos, configuracoes, mes) {
+  const doMesEscolhido = agendamentos.filter(item => item.data.slice(0, 7) === mes)
+
+  const daEspera = doMesEscolhido.filter(item => item.vindoDaEspera && !ehBloqueio(item))
+  const valorDaEspera = daEspera.reduce(
+    (soma, item) => soma + valorDoAgendamento(item, servicos), 0,
+  )
+
+  const sinaisRetidos = doMesEscolhido.filter(item => item.situacao === 'Cancelado' && item.sinalRetido)
+  const valorRetido = sinaisRetidos.reduce(
+    (soma, item) => soma + sinalDoAgendamento(item, servicos, configuracoes), 0,
+  )
+
+  return {
+    horariosRecuperados: daEspera.length,
+    valorDaEspera,
+    cancelamentosComSinalRetido: sinaisRetidos.length,
+    valorRetido,
+    total: valorDaEspera + valorRetido,
+    detalhes: daEspera.map(item => ({
+      id: item.id,
+      cliente: item.cliente,
+      servico: item.servico,
+      data: item.data,
+      horario: item.horario,
+      valor: valorDoAgendamento(item, servicos),
+    })),
+  }
 }

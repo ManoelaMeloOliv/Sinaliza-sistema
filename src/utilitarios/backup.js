@@ -11,6 +11,7 @@ export const CHAVES = [
   'sinaliza-servicos',
   'sinaliza-agendamentos',
   'sinaliza-clientes',
+  'sinaliza-lista-de-espera',
   'sinaliza-marca',
   'sinaliza-perfil',
   'sinaliza-configuracoes',
@@ -21,6 +22,8 @@ export const CHAVES = [
 // Fica fora das CHAVES de proposito: restaurar uma copia antiga nao pode
 // fazer a data da ultima copia voltar no tempo.
 const CHAVE_DA_ULTIMA_COPIA = 'sinaliza-ultima-copia'
+// 'sinaliza-tutorial-visto' tambem fica de fora: num computador novo o
+// tutorial deve aparecer de novo.
 
 const VERSAO = 1
 

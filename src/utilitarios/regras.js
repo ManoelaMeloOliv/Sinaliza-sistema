@@ -71,6 +71,7 @@ function ocupaIntervalo(inicioA, fimA, inicioB, fimB) {
 function faixasOcupadas(agendamentosDoDia, servicos, minutosDeIntervalo, ignorarId) {
   return agendamentosDoDia
     .filter(item => item.id !== ignorarId)
+    .filter(item => item.situacao !== 'Cancelado') // cancelado libera a vaga
     .map(item => {
       const servico = servicos.find(s => s.nome === item.servico)
       const inicio = horarioEmMinutos(item.horario)

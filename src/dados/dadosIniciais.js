@@ -74,6 +74,9 @@ export const perfilInicial = {
   profissional: 'Juliana Silva',
 }
 
+// Quem quis um horario que nao existia. Vira agendamento quando abre vaga.
+export const listaDeEsperaInicial = []
+
 export const configuracoesIniciais = {
   plano: 'free',
   expediente: EXPEDIENTE_PADRAO,
