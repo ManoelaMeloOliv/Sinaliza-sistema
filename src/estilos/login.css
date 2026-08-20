@@ -1,0 +1,120 @@
+/* src/estilos/login.css */
+
+.wrap {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ---- Painel de marca (esquerda) ---- */
+.brand-panel {
+  position: relative;
+  background: linear-gradient(150deg, #6938ef, #8b50e7 55%, #ef6b7b);
+  color: #fff;
+  padding: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.brand-panel:before, .brand-panel:after {
+  content: ""; position: absolute; border-radius: 50%;
+  background: #ffffff14;
+}
+.brand-panel:before { width: 420px; height: 420px; top: -160px; right: -140px; }
+.brand-panel:after { width: 280px; height: 280px; bottom: -120px; left: -80px; background: #ffffff0f; }
+
+.brand-mark { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 800; position: relative; z-index: 1; }
+.brand-mark i {
+  width: 34px; height: 34px; border-radius: 10px; background: #fff;
+  display: grid; place-items: center; flex: none;
+}
+.brand-mark i svg { width: 19px; height: 19px; stroke: #6938ef; fill: none; stroke-width: 2; }
+
+.brand-copy { position: relative; z-index: 1; max-width: 400px; }
+.brand-copy h1 { font-size: 32px; line-height: 1.25; margin: 0 0 14px; font-weight: 800; }
+.brand-copy p { margin: 0; color: #ffffffd0; font-size: 14.5px; line-height: 1.6; }
+
+.brand-points { position: relative; z-index: 1; display: grid; gap: 14px; margin-top: 32px; }
+.brand-point { display: flex; align-items: center; gap: 11px; font-size: 13px; color: #ffffffe6; }
+.brand-point i {
+  width: 28px; height: 28px; border-radius: 9px; background: #ffffff22;
+  display: grid; place-items: center; flex: none;
+}
+.brand-point svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.2; }
+
+.brand-quote {
+  position: relative; z-index: 1;
+  background: #ffffff16; border: 1px solid #ffffff26; border-radius: 16px;
+  padding: 18px; font-size: 12.5px; line-height: 1.6; color: #ffffffe6;
+  backdrop-filter: blur(6px);
+}
+.brand-quote b { display: block; margin-top: 10px; font-size: 11.5px; color: #fff; font-weight: 700; }
+
+/* ---- Painel de formulário (direita) ---- */
+.form-panel {
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px; position: relative;
+}
+
+.form-box { width: 100%; max-width: 380px; }
+.mobile-mark { display: none; align-items: center; gap: 9px; font-weight: 800; font-size: 18px; color: var(--text); margin-bottom: 30px; }
+.mobile-mark i { width: 32px; height: 32px; border-radius: 10px; background: var(--p); display: grid; place-items: center; flex: none; }
+.mobile-mark i svg { width: 17px; height: 17px; stroke: #fff; fill: none; stroke-width: 2; }
+
+.form-head { margin-bottom: 28px; }
+.form-head span.eyebrow { display: block; color: var(--p); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.form-head h2 { font-size: 25px; margin: 0 0 6px; font-weight: 800; }
+.form-head p { margin: 0; color: var(--muted); font-size: 13px; }
+
+.field { display: grid; gap: 6px; margin-bottom: 16px; }
+.field label { font-size: 12px; font-weight: 700; }
+.input-shell {
+  position: relative; display: flex; align-items: center;
+  border: 1.5px solid var(--line); border-radius: 11px; background: var(--card); transition: .15s;
+}
+.input-shell:focus-within { border-color: var(--p); box-shadow: 0 0 0 3px #6938ef1a; }
+.input-shell svg { width: 17px; height: 17px; margin-left: 13px; flex: none; color: var(--muted); stroke: currentColor; fill: none; stroke-width: 1.8; }
+.input-shell input { border: 0; background: transparent; height: 46px; padding: 0 12px; width: 100%; color: var(--text); border-radius: 11px; }
+.input-shell input:focus { outline: none; }
+.input-shell button { border: 0; background: none; color: var(--muted); padding: 0 13px; height: 46px; display: grid; place-items: center; flex: none; }
+
+.row-between { display: flex; align-items: center; justify-content: space-between; margin: 2px 0 22px; }
+.checkbox-line { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
+.checkbox-line input { width: 16px; height: 16px; accent-color: var(--p); border-radius: 4px; margin: 0; }
+.link { color: var(--p); font-weight: 700; font-size: 12.5px; text-decoration: none; }
+.link:hover { text-decoration: underline; }
+
+.btn {
+  width: 100%; border: 0; border-radius: 11px; padding: 13px 15px; font-weight: 700;
+  background: var(--p); color: #fff; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 14px 28px -16px #6938ef88; transition: .15s;
+}
+.btn:hover { background: var(--p2); }
+.btn:disabled { opacity: .65; }
+
+.divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 11px; margin: 22px 0; }
+.divider:before, .divider:after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.alt-btn {
+  width: 100%; border: 1px solid var(--line); background: var(--card); color: var(--text);
+  border-radius: 11px; padding: 12px 15px; font-weight: 600; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer; transition: .15s;
+}
+.alt-btn:hover { border-color: var(--p); color: var(--p); }
+
+/* Força o SVG do Google a ficar pequeno e alinhado */
+.alt-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  flex: none;
+}
+
+@media (max-width:880px){
+  .wrap { grid-template-columns: 1fr; }
+  .brand-panel { display: none; }
+  .form-box .mobile-mark { display: flex; }
+}
