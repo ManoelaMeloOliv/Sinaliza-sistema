@@ -12,7 +12,7 @@ import { PaginaClientes } from './paginas/painel/PaginaClientes'
 import { PaginaFinanceiro } from './paginas/painel/PaginaFinanceiro'
 import { PaginaConfiguracoes } from './paginas/painel/PaginaConfiguracoes'
 import { PaginaAgendamento } from './paginas/agendamento/PaginaAgendamento'
-import { Login } from './paginas/login/login';
+import { Login } from './paginas/login/Login';
 
 export function Aplicacao() {
   const { usuario, carregando } = useContext(ContextoAplicacao)
