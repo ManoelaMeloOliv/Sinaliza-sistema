@@ -150,7 +150,7 @@ export function Login() {
           </div>
 
           <div className="form-head">
-            <span className="eyebrow">Painel do prestador</span>
+            <span className="eyebrow">Painel do administrador</span>
             <h2>{modo === 'entrar' ? 'Bem-vindo de volta' : 'Crie sua conta'}</h2>
             <p>{modo === 'entrar' ? 'Entre com seus dados para acessar sua agenda.' : 'Leva menos de um minuto para começar.'}</p>
           </div>
