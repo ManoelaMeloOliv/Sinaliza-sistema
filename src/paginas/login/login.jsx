@@ -107,9 +107,11 @@ export function Login() {
       {/* Painel de marca (esquerda) — sem alteração */}
       <aside className="brand-panel">
         <div className="brand-mark">
-          <i>
-            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#6938ef" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3c-2.5 3.2-4.5 5.6-4.5 9a4.5 4.5 0 0 0 9 0c0-3.4-2-5.8-4.5-9"/></svg>
-          </i>
+          <img 
+            src="/logo-branca.png" 
+            alt="Sinaliza" 
+            style={{ width: '32px', height: '32px', objectFit: 'contain' }} 
+          />
           Sinaliza
         </div>
 
