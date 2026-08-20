@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ContextoAplicacao } from './contexto/contextoAplicacao'
 
+import { TelaCarregando } from './componentes/estrutura/TelaCarregando'
 import { EstruturaPainel } from './componentes/estrutura/EstruturaPainel'
 import { PaginaInicial } from './paginas/painel/PaginaInicial'
 import { PaginaAgenda } from './paginas/painel/PaginaAgenda'
@@ -11,19 +12,23 @@ import { PaginaClientes } from './paginas/painel/PaginaClientes'
 import { PaginaFinanceiro } from './paginas/painel/PaginaFinanceiro'
 import { PaginaConfiguracoes } from './paginas/painel/PaginaConfiguracoes'
 import { PaginaAgendamento } from './paginas/agendamento/PaginaAgendamento'
-import { Login } from './paginas/login/Login' // Ajuste conforme o caminho da sua pasta
+import { Login } from './paginas/login/Login'
 
 export function Aplicacao() {
-  const { usuario } = useContext(ContextoAplicacao)
+  const { usuario, carregando } = useContext(ContextoAplicacao)
+
+  // Enquanto o Supabase ainda não confirmou se existe sessão válida,
+  // não decidimos rota nenhuma — evita expor/piscar conteúdo protegido.
+  if (carregando) {
+    return <TelaCarregando />
+  }
 
   return (
     <Routes>
-      {/* Rota de Login */}
       <Route path="/login" element={usuario ? <Navigate to="/painel" replace /> : <Login />} />
 
-      {/* Rotas protegidas */}
-      <Route 
-        path="/painel" 
+      <Route
+        path="/painel"
         element={usuario ? <EstruturaPainel /> : <Navigate to="/login" replace />}
       >
         <Route index element={<PaginaInicial />} />
@@ -35,11 +40,9 @@ export function Aplicacao() {
         <Route path="configuracoes" element={<PaginaConfiguracoes />} />
       </Route>
 
-      {/* Rota pública de agendamento */}
       <Route path="/agendamento" element={<PaginaAgendamento />} />
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to={usuario ? "/painel" : "/login"} replace />} />
+      <Route path="*" element={<Navigate to={usuario ? '/painel' : '/login'} replace />} />
     </Routes>
   )
 }
