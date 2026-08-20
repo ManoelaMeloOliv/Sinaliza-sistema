@@ -145,9 +145,11 @@ export function Login() {
       <main className="form-panel">
         <div className="form-box">
           <div className="mobile-mark">
-            <i>
-              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3c-2.5 3.2-4.5 5.6-4.5 9a4.5 4.5 0 0 0 9 0c0-3.4-2-5.8-4.5-9"/></svg>
-            </i>
+            <img 
+              src="/logo-branca.png" 
+              alt="Sinaliza" 
+              style={{ width: '28px', height: '28px', objectFit: 'contain' }} 
+            />
             Sinaliza
           </div>
 
