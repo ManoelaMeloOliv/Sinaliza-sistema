@@ -63,12 +63,13 @@ export function Login() {
 
     setCarregando(true)
 
+    // Ajustado para o domínio de produção oficial
     const { data, error } = await supabase.auth.signUp({
       email: emailCadastro,
       password: senhaCadastro,
       options: {
         data: { nome_completo: nome.trim() },
-        emailRedirectTo: `${window.location.origin}/login`,
+        emailRedirectTo: 'https://app.usesinaliza.com.br/login',
       },
     })
 
@@ -79,8 +80,6 @@ export function Login() {
       return
     }
 
-    // O Supabase não retorna erro quando o e-mail já existe e já está confirmado
-    // (é proteção contra enumeração de contas). Nesse caso "identities" vem vazio.
     if (data?.user && data.user.identities?.length === 0) {
       setErro('Este e-mail já está cadastrado. Tente entrar ou recuperar sua senha.')
       return
@@ -95,16 +94,17 @@ export function Login() {
 
   async function handleLoginGoogle() {
     setErro('')
+    // Ajustado para redirecionar direto para o painel em produção
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/painel' },
+      options: { redirectTo: 'https://app.usesinaliza.com.br/painel' },
     })
     if (error) setErro('Erro ao entrar com o Google: ' + error.message)
   }
 
   return (
     <div className="wrap">
-      {/* Painel de marca (esquerda) — sem alteração */}
+      {/* Painel de marca (esquerda) */}
       <aside className="brand-panel">
         <div className="brand-mark">
           <img 
